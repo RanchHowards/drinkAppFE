@@ -1,7 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 
 import './App.css'
 import Events from './components/Events'
+
+import { useMutation } from '@apollo/client'
+import { ADD_EVENT, ALL_EVENTS } from './queries'
+
 function App() {
   //sign in
   //sign up
@@ -11,31 +15,66 @@ function App() {
 
   const [signedIn, setSignIn] = useState(false)
   const [eventName, setEventName] = useState('')
-  const [events, setEvents] = useState([])
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [showSignIn, setShowSignIn] = useState(false)
 
   const signIn = () => {
-    setSignIn(true)
+    if (!showSignIn) {
+      setShowSignIn(true)
+    } else {
+      setSignIn(true)
+      setShowSignIn(false)
+      setUsername('')
+      setPassword('')
+    }
   }
 
   const signOut = () => {
     setSignIn(false)
   }
 
+  const [addEvent] = useMutation(ADD_EVENT, {
+    refetchQueries: [{ query: ALL_EVENTS }],
+    onError: (error) => console.log(error),
+  })
+
   const handleEvent = (event) => {
     event.preventDefault()
 
-    setEvents(events.concat(eventName))
-
+    addEvent({ variables: { title: eventName } })
     setEventName('')
   }
+
   if (!signedIn)
     return (
       <div>
         <div>
           <button onClick={signIn}>sign in</button>
           <button>sign up</button>
+          {showSignIn && (
+            <div>
+              <form>
+                <div>
+                  username
+                  <input
+                    value={username}
+                    onChange={({ target }) => setUsername(target.value)}
+                  ></input>
+                </div>
+                <div>
+                  password
+                  <input
+                    value={password}
+                    onChange={({ target }) => setPassword(target.value)}
+                    type="password"
+                  ></input>
+                </div>
+              </form>
+            </div>
+          )}
         </div>
-        <Events events={events} />
+        <Events />
       </div>
     )
   else
@@ -51,7 +90,7 @@ function App() {
           ></input>
           <button type="submit">add Event</button>
         </form>
-        <Events events={events} />
+        <Events />
       </div>
     )
 }
