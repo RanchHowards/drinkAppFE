@@ -1,6 +1,7 @@
 import React from 'react'
 import { useQuery } from '@apollo/client'
 import { ALL_EVENTS } from '../queries'
+import Event from './Event'
 
 const Events = () => {
   const result = useQuery(ALL_EVENTS)
@@ -15,7 +16,11 @@ const Events = () => {
     <div>
       <ul>
         {events.map((event) => {
-          return <li key={event.id}>{event.title}</li>
+          return (
+            <li key={event.id}>
+              <Event event={event} />
+            </li>
+          )
         })}
       </ul>
     </div>

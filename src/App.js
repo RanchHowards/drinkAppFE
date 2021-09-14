@@ -3,8 +3,8 @@ import React, { useState, useEffect } from 'react'
 import './App.css'
 import Events from './components/Events'
 
-import { useMutation } from '@apollo/client'
-import { ADD_EVENT, ALL_EVENTS, CREATE_USER, LOGIN } from './queries'
+import { useMutation, useLazyQuery, useApolloClient } from '@apollo/client'
+import { ADD_EVENT, ALL_EVENTS, CREATE_USER, LOGIN, USER_INFO } from './queries'
 
 function App() {
   //sign in
@@ -20,6 +20,11 @@ function App() {
   const [showSignIn, setShowSignIn] = useState(false)
   const [showSignUp, setShowSignUp] = useState(false)
   const [token, setToken] = useState(null)
+  const [showName, setShowName] = useState(null)
+
+  const [userInfo, userInfoResult] = useLazyQuery(USER_INFO)
+
+  const client = useApolloClient()
 
   //MUTATIONS
   const [createUser] = useMutation(CREATE_USER, {
@@ -47,9 +52,16 @@ function App() {
   useEffect(() => {
     if (result.data) {
       setToken(result.data.login.value)
-      localStorage.setItem('user-token', token)
+      localStorage.setItem('user-token', result.data.login.value) //for some reaosn can't use TOKEN here...
     }
   }, [result.data]) // eslint-disable-line
+
+  useEffect(() => {
+    if (userInfoResult.data && userInfoResult.data.me) {
+      setShowName(userInfoResult.data.me.username)
+      console.log(showName)
+    }
+  }, [userInfoResult]) //eslint-disable-line
 
   const signIn = () => {
     if (!showSignIn) {
@@ -74,11 +86,15 @@ function App() {
   }
 
   const signOut = () => {
-    //must still clear cache & ....
+    client.resetStore() //clears cache from Apollo
     localStorage.clear()
     setToken(null)
+    setShowName(null)
   }
 
+  const clickName = () => {
+    userInfo()
+  }
   const handleEvent = (event) => {
     event.preventDefault()
 
@@ -138,11 +154,12 @@ function App() {
         <Events />
       </div>
     )
-  else
+  else if (token)
     return (
       <div>
         <button onClick={signOut}>sign out</button>
-        you're signed in
+        <button onClick={clickName}>show Username</button>
+        you're signed in {showName}
         <form onSubmit={handleEvent}>
           event name
           <input
