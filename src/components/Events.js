@@ -14,10 +14,10 @@ const Events = () => {
 
   return (
     <div>
-      <ul>
+      <ul className="container">
         {events.map((event) => {
           return (
-            <li key={event.id}>
+            <li className="event" key={event.id}>
               <Event event={event} />
             </li>
           )
