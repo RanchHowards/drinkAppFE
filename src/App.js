@@ -3,30 +3,27 @@ import React, { useState, useEffect } from 'react'
 import './App.css'
 import Events from './components/Events'
 import Navbar from './components/Navbar'
+import CreateEvent from './components/CreateEvent'
+import Profile from './components/Profile'
 
-import { useMutation, useLazyQuery, useApolloClient } from '@apollo/client'
-import { ADD_EVENT, ALL_EVENTS, CREATE_USER, LOGIN, USER_INFO } from './queries'
+import { useMutation, useApolloClient } from '@apollo/client'
+import { CREATE_USER, LOGIN, ADD_EVENT, ALL_EVENTS } from './queries'
 
 function App() {
   //STATE
-  const [eventName, setEventName] = useState('')
-
   const [token, setToken] = useState(null)
-  const [showName, setShowName] = useState(null)
-
-  const [userInfo, userInfoResult] = useLazyQuery(USER_INFO)
-
   const client = useApolloClient()
 
   //MUTATIONS
   const [createUser, createResult] = useMutation(CREATE_USER, {
     onError: (err) =>
       console.log('error from createUser mutation in App.js', err),
+    // refetchQueries: [{ query: USER_INFO }],
   })
   const [login, loginResult] = useMutation(LOGIN, {
     onError: (err) => console.log('error from LOGIN mutation in App.js', err),
+    // refetchQueries: [{ query: USER_INFO }],
   })
-
   const [addEvent] = useMutation(ADD_EVENT, {
     refetchQueries: [{ query: ALL_EVENTS }],
     onError: (error) => console.log(error),
@@ -44,39 +41,23 @@ function App() {
   useEffect(() => {
     if (loginResult.data) {
       setToken(loginResult.data.login.value)
-      localStorage.setItem('user-token', token)
+      localStorage.setItem('user-token', loginResult.data.login.value) //not sure why can't use Token, but 'null' is inserted
     }
   }, [loginResult.data]) // eslint-disable-line
 
+  //sets token after creating account
   useEffect(() => {
     if (createResult.data) {
       setToken(createResult.data.createUser.value)
-      localStorage.setItem('user-token', token)
+      localStorage.setItem('user-token', createResult.data.createUser.value) //not sure why can't use Token, but 'null' is inserted
     }
   }, [createResult.data]) //eslint-disable-line
 
-  useEffect(() => {
-    if (userInfoResult.data && userInfoResult.data.me) {
-      setShowName(userInfoResult.data.me.username)
-      console.log(showName)
-    }
-  }, [userInfoResult]) //eslint-disable-line
-
   const signOut = () => {
-    client.resetStore() //clears cache from Apollo
     localStorage.clear()
     setToken(null)
-    setShowName(null)
-  }
-
-  const clickName = () => {
-    userInfo()
-  }
-  const handleEvent = (event) => {
-    event.preventDefault()
-
-    addEvent({ variables: { title: eventName } })
-    setEventName('')
+    client.clearStore() //clears cache from Apollo
+    //HUGE FUCKING DIFFERENCE BETWEEN clearStore & resetStore!!!!!!! not sure resetStore does anything
   }
 
   if (!token)
@@ -85,38 +66,37 @@ function App() {
         <Navbar
           login={login}
           createUser={createUser}
-          signOut={signOut}
           token={token}
+          signOut={signOut}
         />
-        <div className="app">
+        <div className="wrapper">
           <div>
             <Events />
           </div>
         </div>
       </div>
     )
-  else if (token)
+  else
     return (
       <div>
         <Navbar
           login={login}
           createUser={createUser}
-          signOut={signOut}
           token={token}
+          signOut={signOut}
         />
-        <div className="app">
-          <button onClick={signOut}>sign out</button>
-          <button onClick={clickName}>show Username</button>
-          you're signed in {showName}
-          <form onSubmit={handleEvent}>
-            event name
-            <input
-              value={eventName}
-              onChange={({ target }) => setEventName(target.value)}
-            ></input>
-            <button type="submit">add Event</button>
-          </form>
-          <Events />
+        <div className="wrapper">
+          <div className="main">
+            <Events />
+          </div>
+          <aside className="aside aside-1">
+            <CreateEvent addEvent={addEvent} />
+          </aside>
+
+          <aside className="aside aside-2">
+            <Profile />
+          </aside>
+          <footer className="footer">FOOTER</footer>
         </div>
       </div>
     )

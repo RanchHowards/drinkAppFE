@@ -1,16 +1,20 @@
 import React from 'react'
+import Event from './Event'
 import { useQuery } from '@apollo/client'
 import { ALL_EVENTS } from '../queries'
-import Event from './Event'
 
 const Events = () => {
-  const result = useQuery(ALL_EVENTS)
+  const { loading, error, data } = useQuery(ALL_EVENTS)
 
-  if (result.loading) {
+  if (loading) {
     return <div>LOADING</div>
   }
 
-  const events = result.data.allEvents
+  if (error) {
+    return <div>ERROR: {error}</div>
+  }
+
+  const events = data.allEvents
 
   return (
     <div>
