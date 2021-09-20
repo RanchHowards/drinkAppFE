@@ -9,6 +9,8 @@ import Profile from './components/Profile'
 import { useMutation, useApolloClient } from '@apollo/client'
 import { CREATE_USER, LOGIN, ADD_EVENT, ALL_EVENTS } from './queries'
 
+import { isLoggedInVar } from './cache'
+
 function App() {
   //STATE
   const [token, setToken] = useState(null)
@@ -22,8 +24,29 @@ function App() {
   })
   const [login, loginResult] = useMutation(LOGIN, {
     onError: (err) => console.log('error from LOGIN mutation in App.js', err),
+    onCompleted({ login }) {
+      if (login) {
+        localStorage.setItem('user-token', login.value)
+        setToken(login.value)
+        isLoggedInVar(true)
+      }
+    },
+    // awaitRefetchQueries: true,
     // refetchQueries: [{ query: USER_INFO }],
   })
+
+  const signOut = () => {
+    client.clearStore().then(() => {
+      localStorage.clear()
+      setToken(null)
+      return isLoggedInVar(false)
+    })
+    // .then(() => {
+    // client.resetStore()
+    // }) //clears cache from Apollo
+    //HUGE FUCKING DIFFERENCE BETWEEN clearStore & resetStore!!!!!!! not sure resetStore does anything
+  }
+
   const [addEvent] = useMutation(ADD_EVENT, {
     refetchQueries: [{ query: ALL_EVENTS }],
     onError: (error) => console.log(error),
@@ -38,12 +61,12 @@ function App() {
   }, [])
 
   //sets token after loggin in
-  useEffect(() => {
-    if (loginResult.data) {
-      setToken(loginResult.data.login.value)
-      localStorage.setItem('user-token', loginResult.data.login.value) //not sure why can't use Token, but 'null' is inserted
-    }
-  }, [loginResult.data]) // eslint-disable-line
+  // useEffect(() => {
+  //   if (loginResult.data) {
+  //     setToken(loginResult.data.login.value)
+  //     localStorage.setItem('user-token', loginResult.data.login.value) //not sure why can't use Token, but 'null' is inserted
+  //   }
+  // }, [loginResult.data]) // eslint-disable-line
 
   //sets token after creating account
   useEffect(() => {
@@ -52,13 +75,6 @@ function App() {
       localStorage.setItem('user-token', createResult.data.createUser.value) //not sure why can't use Token, but 'null' is inserted
     }
   }, [createResult.data]) //eslint-disable-line
-
-  const signOut = () => {
-    localStorage.clear()
-    setToken(null)
-    client.clearStore() //clears cache from Apollo
-    //HUGE FUCKING DIFFERENCE BETWEEN clearStore & resetStore!!!!!!! not sure resetStore does anything
-  }
 
   if (!token)
     return (
@@ -69,37 +85,38 @@ function App() {
           token={token}
           signOut={signOut}
         />
-        <div className="wrapper">
-          <div>
+        <div className="main-container-no-token">
+          <div className="main-no-token">
             <Events />
           </div>
-        </div>
-      </div>
-    )
-  else
-    return (
-      <div>
-        <Navbar
-          login={login}
-          createUser={createUser}
-          token={token}
-          signOut={signOut}
-        />
-        <div className="wrapper">
-          <div className="main">
-            <Events />
-          </div>
-          <aside className="aside aside-1">
-            <CreateEvent addEvent={addEvent} />
-          </aside>
-
-          <aside className="aside aside-2">
-            <Profile />
-          </aside>
           <footer className="footer">FOOTER</footer>
         </div>
       </div>
     )
+
+  return (
+    <div>
+      <Navbar
+        login={login}
+        createUser={createUser}
+        token={token}
+        signOut={signOut}
+      />
+      <div className="main-container">
+        <div className="main">
+          <Events token={token} />
+        </div>
+        <aside className="aside aside-1">
+          <CreateEvent addEvent={addEvent} />
+        </aside>
+
+        <aside className="aside aside-2">
+          <Profile />
+        </aside>
+        <footer className="footer">FOOTER</footer>
+      </div>
+    </div>
+  )
 }
 
 export default App

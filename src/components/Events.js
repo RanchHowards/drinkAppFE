@@ -3,7 +3,7 @@ import Event from './Event'
 import { useQuery } from '@apollo/client'
 import { ALL_EVENTS } from '../queries'
 
-const Events = () => {
+const Events = ({ token }) => {
   const { loading, error, data } = useQuery(ALL_EVENTS)
 
   if (loading) {
@@ -18,11 +18,11 @@ const Events = () => {
 
   return (
     <div>
-      <ul className="container">
+      <ul className="events-container">
         {events.map((event) => {
           return (
             <li className="event" key={event.id}>
-              <Event event={event} />
+              <Event event={event} token={token} />
             </li>
           )
         })}

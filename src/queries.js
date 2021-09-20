@@ -13,8 +13,12 @@ export const ALL_EVENTS = gql`
   query {
     allEvents {
       title
+      eventType
+      eventPic
+      location
       host {
         username
+        pic
       }
       id
     }
@@ -22,9 +26,22 @@ export const ALL_EVENTS = gql`
 `
 
 export const ADD_EVENT = gql`
-  mutation addEvent($title: String!) {
-    addEvent(title: $title) {
+  mutation addEvent(
+    $title: String!
+    $eventType: String
+    $eventPic: String
+    $location: String
+  ) {
+    addEvent(
+      title: $title
+      eventType: $eventType
+      eventPic: $eventPic
+      location: $location
+    ) {
       title
+      eventType
+      eventPic
+      location
     }
   }
 `
@@ -49,6 +66,13 @@ export const USER_INFO = gql`
     me {
       username
       id
+      drink
+      pic
     }
+  }
+`
+export const IS_LOGGED_IN = gql`
+  query IsUserLoggedIn {
+    isLoggedIn @client
   }
 `
