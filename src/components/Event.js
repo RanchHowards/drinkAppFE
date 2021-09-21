@@ -1,17 +1,31 @@
 import React from 'react'
 import { useQuery, useMutation } from '@apollo/client'
 import { Link } from 'react-router-dom'
-import { IS_LOGGED_IN, JOIN_EVENT } from '../queries'
+import { IS_LOGGED_IN, JOIN_EVENT, LEAVE_EVENT } from '../queries'
 
 const Event = ({ event, token, user }) => {
   const [joinEvent] = useMutation(JOIN_EVENT)
+  const [leaveEvent] = useMutation(LEAVE_EVENT)
   const joinEventClick = () => {
     joinEvent({ variables: { userId: user.id, eventId: event.id } })
     alert(`you're going to ${event.title}`)
   }
-  const Button = ({ handleEvent }) => {
+  const leaveEventClick = () => {
+    leaveEvent({ variables: { userId: user.id, eventId: event.id } })
+    alert(`you're NO LONGER going to ${event.title}`)
+  }
+
+  const going = !event.attendees.every((person) => person.id !== user.id)
+  const Button = () => {
+    if (going) {
+      return (
+        <button onClick={leaveEventClick} className="leave-button">
+          LEAVE
+        </button>
+      )
+    }
     return (
-      <button onClick={handleEvent} className="join-button">
+      <button onClick={joinEventClick} className="join-button">
         JOIN
       </button>
     )

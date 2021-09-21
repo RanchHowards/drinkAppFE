@@ -93,6 +93,18 @@ export const JOIN_EVENT = gql`
     }
   }
 `
+export const LEAVE_EVENT = gql`
+  mutation leaveEvent($userId: ID!, $eventId: ID!) {
+    leaveEvent(userId: $userId, eventId: $eventId) {
+      title
+      attendees {
+        username
+        id
+      }
+      id
+    }
+  }
+`
 export const FIND_EVENT = gql`
   query findEvent($eventId: ID!) {
     findEvent(eventId: $eventId) {

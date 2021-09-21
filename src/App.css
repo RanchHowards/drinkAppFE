@@ -60,7 +60,8 @@ ul {
 }
 
 .join-button,
-.edit-button {
+.edit-button,
+.leave-button {
   display: inline-block;
   border: black solid 2px;
   background-color: rgb(255, 255, 255);
@@ -97,6 +98,18 @@ ul {
   font-weight: bolder;
   font-size: 45px;
   border-radius: 1em;
+}
+.leave-button:hover {
+  background-color: red;
+  font-weight: bolder;
+  color: white;
+}
+.leave-button:active {
+  background-color: red;
+  border: solid 4px black;
+  color: azure;
+  font-weight: bolder;
+  font-size: 45px;
 }
 .create-event-container,
 .edit-event-container {
