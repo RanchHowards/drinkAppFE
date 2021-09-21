@@ -1,27 +1,57 @@
 import React, { useState } from 'react'
+import { useQuery, useMutation } from '@apollo/client'
+import { useParams, useHistory } from 'react-router-dom'
+import { ALL_EVENTS, EDIT_EVENT, FIND_EVENT } from '../queries'
 
-// import { useMutation } from '@apollo/client'
-// import { ADD_EVENT, ALL_EVENTS } from '../queries'
+const EditEvent = ({ token }) => {
+  const history = useHistory()
 
-const CreateEvent = ({ addEvent, history }) => {
+  const id = useParams().id
+
+  const { loading, error, data } = useQuery(FIND_EVENT, {
+    variables: { eventId: id },
+    fetchPolicy: 'network-only',
+    onCompleted: () => {
+      setEventName(data.findEvent.title)
+      setEventPic(data.findEvent.eventPic)
+      setLocation(data.findEvent.location)
+    },
+  })
+
+  const [editEvent] = useMutation(EDIT_EVENT, {
+    refetchQueries: [{ query: ALL_EVENTS }],
+  })
+
   const [eventName, setEventName] = useState('')
-  const [eventType, setEventType] = useState('BYOB')
+  const [eventType, setEventType] = useState('') //needs to be figured out
   const [eventPic, setEventPic] = useState('')
   const [location, setLocation] = useState('')
 
   const handleEvent = (event) => {
     event.preventDefault()
 
-    addEvent({ variables: { title: eventName, eventType, eventPic, location } })
+    editEvent({
+      variables: {
+        title: eventName,
+        eventType,
+        eventPic,
+        location,
+        eventId: id,
+      },
+    })
     setEventName('')
     setEventType('')
     setEventPic('')
     setLocation('')
     history.push('/events')
   }
+  if (loading) return <div>LOADING</div>
 
+  if (error) return <div>{error}</div>
+
+  const event = data.findEvent
   return (
-    <div className="create-event-container">
+    <div className="edit-event-container">
       <form onSubmit={handleEvent}>
         <input
           value={eventName}
@@ -67,10 +97,11 @@ const CreateEvent = ({ addEvent, history }) => {
           placeholder="Location"
           onChange={({ target }) => setLocation(target.value)}
         ></input>
-        <button type="submit">add Event</button>
+        <button type="submit">EDIT Event</button>
       </form>
+      <img src={event.eventPic} alt="event"></img>
     </div>
   )
 }
 
-export default CreateEvent
+export default EditEvent

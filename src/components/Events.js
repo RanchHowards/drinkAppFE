@@ -1,28 +1,28 @@
 import React from 'react'
 import Event from './Event'
 import { useQuery } from '@apollo/client'
-import { ALL_EVENTS } from '../queries'
+import { USER_INFO } from '../queries'
 
-const Events = ({ token }) => {
-  const { loading, error, data } = useQuery(ALL_EVENTS)
+const Events = ({ token, eventsInfo }) => {
+  const userInfo = useQuery(USER_INFO)
 
-  if (loading) {
+  if (eventsInfo.loading || userInfo.loading) {
     return <div>LOADING</div>
   }
 
-  if (error) {
-    return <div>ERROR: {error}</div>
+  if (eventsInfo.error) {
+    return <div>ERROR: {eventsInfo.error}</div>
   }
-
-  const events = data.allEvents
+  const events = eventsInfo.data.allEvents
+  const user = userInfo?.data?.me
 
   return (
     <div>
       <ul className="events-container">
-        {events.map((event) => {
+        {events?.map((event) => {
           return (
             <li className="event" key={event.id}>
-              <Event event={event} token={token} />
+              <Event event={event} token={token} user={user} />
             </li>
           )
         })}

@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
 
 const Navbar = ({ login, createUser, signOut, token }) => {
   const [showForm, setShowForm] = useState(false)
@@ -17,17 +18,6 @@ const Navbar = ({ login, createUser, signOut, token }) => {
       setPassword('')
     }
   }
-  const signUp = (event) => {
-    event.stopPropagation()
-    if (!showForm) {
-      setShowForm(true)
-    } else {
-      createUser({ variables: { username, password } })
-      setShowForm(false)
-      setUsername('')
-      setPassword('')
-    }
-  }
 
   return (
     <div className="navbar">
@@ -39,7 +29,24 @@ const Navbar = ({ login, createUser, signOut, token }) => {
           <nav>
             <ul>
               <li onClick={signIn}>Sign In</li>
-              <li onClick={signUp}> Sign Up</li>
+              <Link to="/register">
+                <li> Sign Up</li>
+              </Link>
+            </ul>
+          </nav>
+        )}
+        {token && (
+          <nav>
+            <ul className="nav-events-wrapper">
+              <Link to="events">
+                <li>Events</li>
+              </Link>
+              <Link to="myevents">
+                <li>My Events</li>
+              </Link>
+              <Link to="createevent">
+                <li>Create Event</li>
+              </Link>
             </ul>
           </nav>
         )}

@@ -5,9 +5,17 @@ input {
   border: black 2px solid;
   border-radius: 3px;
   margin: 2px;
+  display: block;
+}
+.radio-buttons > * {
+  display: inline-block;
+  margin: 0 5px;
 }
 p {
   margin: 0;
+}
+a {
+  color: inherit;
 }
 ul {
   list-style: none;
@@ -51,7 +59,8 @@ ul {
   justify-content: space-between;
 }
 
-.join-button {
+.join-button,
+.edit-button {
   display: inline-block;
   border: black solid 2px;
   background-color: rgb(255, 255, 255);
@@ -77,12 +86,31 @@ ul {
   font-size: 45px;
   border-radius: 1em;
 }
-.create-event-container {
+.edit-button:hover {
+  background-color: orange;
+  font-weight: bolder;
+}
+.edit-button:active {
+  background-color: orange;
+  border: rgba(0, 128, 0, 0.555);
+  color: azure;
+  font-weight: bolder;
+  font-size: 45px;
+  border-radius: 1em;
+}
+.create-event-container,
+.edit-event-container {
   border: black solid 2px;
   border-radius: 3px;
 
   margin: 10px;
   padding: 5px;
+}
+.edit-event-container {
+  display: flex;
+}
+.edit-event-container img {
+  margin-left: 10px;
 }
 .profile {
   border: black solid 2px;
@@ -105,7 +133,7 @@ ul {
 
 /* NAVBAR */
 .navbar {
-  position: absolute;
+  position: fixed;
   width: 100%;
   z-index: 3;
 }
@@ -117,6 +145,11 @@ ul {
   justify-content: space-between;
   padding: 0 15px;
   align-items: center;
+}
+
+.nav-events-wrapper {
+  display: flex;
+  justify-content: space-between;
 }
 
 nav ul li {

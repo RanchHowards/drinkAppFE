@@ -2,7 +2,7 @@ import React from 'react'
 import { USER_INFO } from '../queries'
 import { useQuery } from '@apollo/client'
 
-const Profile = () => {
+const Profile = ({ userInfo }) => {
   const { loading, error, data } = useQuery(USER_INFO)
   if (loading) {
     return <div>LOADING</div>

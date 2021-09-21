@@ -16,11 +16,24 @@ export const ALL_EVENTS = gql`
       eventType
       eventPic
       location
+      attendees {
+        username
+        pic
+        id
+      }
       host {
         username
         pic
+        id
       }
       id
+    }
+  }
+`
+export const ALL_USERS = gql`
+  query {
+    allUsers {
+      username
     }
   }
 `
@@ -45,7 +58,51 @@ export const ADD_EVENT = gql`
     }
   }
 `
-
+export const EDIT_EVENT = gql`
+  mutation editEvent(
+    $title: String!
+    $eventType: String
+    $eventPic: String
+    $location: String
+    $eventId: ID!
+  ) {
+    editEvent(
+      title: $title
+      eventType: $eventType
+      eventPic: $eventPic
+      location: $location
+      eventId: $eventId
+    ) {
+      title
+      eventType
+      eventPic
+      location
+      id
+    }
+  }
+`
+export const JOIN_EVENT = gql`
+  mutation joinEvent($userId: ID!, $eventId: ID!) {
+    joinEvent(userId: $userId, eventId: $eventId) {
+      title
+      attendees {
+        username
+        id
+      }
+      id
+    }
+  }
+`
+export const FIND_EVENT = gql`
+  query findEvent($eventId: ID!) {
+    findEvent(eventId: $eventId) {
+      title
+      eventType
+      eventPic
+      location
+    }
+  }
+`
 export const CREATE_USER = gql`
   mutation createUser($username: String!, $password: String!) {
     createUser(username: $username, password: $password) {
@@ -68,6 +125,13 @@ export const USER_INFO = gql`
       id
       drink
       pic
+      myEvents {
+        title
+        eventType
+        eventPic
+        location
+        id
+      }
     }
   }
 `
