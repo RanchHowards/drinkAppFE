@@ -112,6 +112,15 @@ export const FIND_EVENT = gql`
       eventType
       eventPic
       location
+      attendees {
+        username
+        id
+      }
+      host {
+        username
+        pic
+        id
+      }
     }
   }
 `

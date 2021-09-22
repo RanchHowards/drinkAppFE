@@ -38,13 +38,13 @@ const Navbar = ({ login, createUser, signOut, token }) => {
         {token && (
           <nav>
             <ul className="nav-events-wrapper">
-              <Link to="events">
+              <Link to="/events">
                 <li>Events</li>
               </Link>
-              <Link to="myevents">
+              <Link to="/myevents">
                 <li>My Events</li>
               </Link>
-              <Link to="createevent">
+              <Link to="/createevent">
                 <li>Create Event</li>
               </Link>
             </ul>

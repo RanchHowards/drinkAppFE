@@ -10,6 +10,7 @@ import Profile from './components/Profile'
 import Register from './components/Register'
 import MyEvents from './components/MyEvents'
 import EditEvent from './components/EditEvent'
+import EventShow from './components/EventShow'
 
 import { useMutation, useApolloClient, useQuery } from '@apollo/client'
 import { CREATE_USER, LOGIN, ADD_EVENT, ALL_EVENTS } from './queries'
@@ -105,11 +106,11 @@ function App() {
             <Route path="/register">
               <Register createUser={createUser} history={history} />
             </Route>
-            <Route path="/events/:id">
-              <Event />
-            </Route>
             <Route path="/myevents">
               <MyEvents eventsInfo={eventsInfo} />
+            </Route>
+            <Route path="/events/:id">
+              <EventShow />
             </Route>
             <Route path="/events">
               <Events eventsInfo={eventsInfo} />
