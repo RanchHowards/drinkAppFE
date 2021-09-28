@@ -3,7 +3,6 @@ import { Switch, Route, useHistory, Redirect } from 'react-router-dom'
 
 import './App.css'
 import Events from './components/Events'
-import Event from './components/Event'
 import Navbar from './components/Navbar'
 import CreateEvent from './components/CreateEvent'
 import Profile from './components/Profile'
@@ -21,18 +20,26 @@ function App() {
   const eventsInfo = useQuery(ALL_EVENTS)
   //STATE
   const [token, setToken] = useState(null)
+  const [notification, setNotification] = useState(null)
   const client = useApolloClient()
 
   const history = useHistory()
 
   //MUTATIONS
   const [createUser, createResult] = useMutation(CREATE_USER, {
-    onError: (err) =>
-      console.log('error from createUser mutation in App.js', err),
+    onError: (err) => {
+      setNotification(err.message)
+      setTimeout(() => setNotification(null), 2000)
+      console.log('error from createUser mutation in App.js', err)
+    },
     // refetchQueries: [{ query: USER_INFO }],
   })
   const [login, loginResult] = useMutation(LOGIN, {
-    onError: (err) => console.log('error from LOGIN mutation in App.js', err),
+    onError: (err) => {
+      setNotification(err.message)
+      setTimeout(() => setNotification(null), 2000)
+      console.log('error from LOGIN mutation in App.js', err)
+    },
     onCompleted({ login }) {
       if (login) {
         localStorage.setItem('user-token', login.value)
@@ -57,7 +64,11 @@ function App() {
 
   const [addEvent] = useMutation(ADD_EVENT, {
     refetchQueries: [{ query: ALL_EVENTS }],
-    onError: (error) => console.log(error),
+    onError: (error) => {
+      setNotification(error.message)
+      setTimeout(() => setNotification(null), 2000)
+      console.log(error)
+    },
   })
 
   //checks for token of previous session
@@ -85,6 +96,7 @@ function App() {
         createUser={createUser}
         token={token}
         signOut={signOut}
+        notification={notification}
       />
       <div className="main-container">
         <div className="main">

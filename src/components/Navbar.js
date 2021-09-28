@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import Notification from './Notification'
 
-const Navbar = ({ login, createUser, signOut, token }) => {
+const Navbar = ({ login, createUser, signOut, token, notification }) => {
   const [showForm, setShowForm] = useState(false)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -18,7 +19,9 @@ const Navbar = ({ login, createUser, signOut, token }) => {
       setPassword('')
     }
   }
-
+  if (notification) {
+    return <Notification notification={notification} />
+  }
   return (
     <div className="navbar">
       <div className="navbar-container">

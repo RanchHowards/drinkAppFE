@@ -15,7 +15,7 @@ const Event = ({ event, token, user }) => {
     alert(`you're NO LONGER going to ${event.title}`)
   }
 
-  const going = !event.attendees.every((person) => person.id !== user.id)
+  const going = !event.attendees.every((person) => person?.id !== user?.id)
   const Button = () => {
     if (going) {
       return (
