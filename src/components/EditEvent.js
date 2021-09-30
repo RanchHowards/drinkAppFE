@@ -3,7 +3,7 @@ import { useQuery, useMutation } from '@apollo/client'
 import { useParams, useHistory } from 'react-router-dom'
 import { ALL_EVENTS, EDIT_EVENT, FIND_EVENT } from '../queries'
 
-const EditEvent = ({ token }) => {
+const EditEvent = ({ token, setNotify }) => {
   const history = useHistory()
 
   const id = useParams().id
@@ -15,10 +15,17 @@ const EditEvent = ({ token }) => {
       setEventName(data.findEvent.title)
       setEventPic(data.findEvent.eventPic)
       setLocation(data.findEvent.location)
+      setEventType(data.findEvent.eventType)
+      setDescription(data.findEvent.description)
+      setMaxGuests(data.findEvent.maxGuests)
+      setEventDate(data.findEvent.eventDate)
     },
   })
 
   const [editEvent] = useMutation(EDIT_EVENT, {
+    onError: (err) => {
+      setNotify(err.message)
+    },
     refetchQueries: [{ query: ALL_EVENTS }],
   })
 
@@ -26,6 +33,9 @@ const EditEvent = ({ token }) => {
   const [eventType, setEventType] = useState('') //needs to be figured out
   const [eventPic, setEventPic] = useState('')
   const [location, setLocation] = useState('')
+  const [description, setDescription] = useState('')
+  const [eventDate, setEventDate] = useState('')
+  const [maxGuests, setMaxGuests] = useState('')
 
   const handleEvent = (event) => {
     event.preventDefault()
@@ -36,6 +46,9 @@ const EditEvent = ({ token }) => {
         eventType,
         eventPic,
         location,
+        description,
+        eventDate,
+        maxGuests,
         eventId: id,
       },
     })
@@ -43,6 +56,9 @@ const EditEvent = ({ token }) => {
     setEventType('')
     setEventPic('')
     setLocation('')
+    setDescription('')
+    setEventDate('')
+    setMaxGuests('')
     history.push('/events')
   }
   if (loading) return <div>LOADING</div>
@@ -52,12 +68,7 @@ const EditEvent = ({ token }) => {
   const event = data.findEvent
   return (
     <div className="edit-event-container">
-      <form onSubmit={handleEvent}>
-        <input
-          value={eventName}
-          placeholder="Title"
-          onChange={({ target }) => setEventName(target.value)}
-        ></input>
+      <form onSubmit={handleEvent} className="event-form">
         <div className="radio-buttons">
           <label>
             BYOB
@@ -88,6 +99,11 @@ const EditEvent = ({ token }) => {
           </label>
         </div>
         <input
+          value={eventName}
+          placeholder="Title"
+          onChange={({ target }) => setEventName(target.value)}
+        ></input>
+        <input
           value={eventPic}
           placeholder="Pic"
           onChange={({ target }) => setEventPic(target.value)}
@@ -97,9 +113,26 @@ const EditEvent = ({ token }) => {
           placeholder="Location"
           onChange={({ target }) => setLocation(target.value)}
         ></input>
-        <button type="submit">EDIT Event</button>
+        <input
+          value={maxGuests}
+          type="number"
+          min="2"
+          placeholder="no limit"
+          onChange={({ target }) => setMaxGuests(parseInt(target.value))} //changing to an Integer from String
+        ></input>
+        <input
+          value={eventDate}
+          type="datetime-local"
+          onChange={({ target }) => setEventDate(target.value)}
+        ></input>
+        <textarea
+          value={description}
+          placeholder="How's it going to be?"
+          onChange={({ target }) => setDescription(target.value)}
+        ></textarea>
+        <button type="submit">add Event</button>
       </form>
-      <img src={event.eventPic} alt="event"></img>
+      <img src={event.eventPic} className="event-pic" alt="event"></img>
     </div>
   )
 }

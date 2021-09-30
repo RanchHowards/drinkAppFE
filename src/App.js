@@ -25,19 +25,23 @@ function App() {
 
   const history = useHistory()
 
+  const setNotify = (message, type = 'navbar-error') => {
+    //THIS NEEDS TO BE FIXED TO SHOW FULL LENGTH OF BUTTON
+    setNotification({ message, type })
+    setTimeout(() => setNotification(null), 2500)
+  }
+
   //MUTATIONS
   const [createUser, createResult] = useMutation(CREATE_USER, {
     onError: (err) => {
-      setNotification(err.message)
-      setTimeout(() => setNotification(null), 2000)
+      setNotify(err.message)
       console.log('error from createUser mutation in App.js', err)
     },
     // refetchQueries: [{ query: USER_INFO }],
   })
   const [login, loginResult] = useMutation(LOGIN, {
     onError: (err) => {
-      setNotification(err.message)
-      setTimeout(() => setNotification(null), 2000)
+      setNotify(err.message)
       console.log('error from LOGIN mutation in App.js', err)
     },
     onCompleted({ login }) {
@@ -46,10 +50,9 @@ function App() {
         setToken(login.value)
         isLoggedInVar(true)
         history.push('/events')
+        setNotify('Welcome!', 'navbar-success') //could add username to notification
       }
     },
-    // awaitRefetchQueries: true,
-    // refetchQueries: [{ query: USER_INFO }],
   })
 
   const signOut = () => {
@@ -65,9 +68,12 @@ function App() {
   const [addEvent] = useMutation(ADD_EVENT, {
     refetchQueries: [{ query: ALL_EVENTS }],
     onError: (error) => {
-      setNotification(error.message)
+      setNotify(error.message)
       setTimeout(() => setNotification(null), 2000)
       console.log(error)
+    },
+    onCompleted: ({ addEvent }) => {
+      setNotify(`${addEvent.title} is happening!`, 'navbar-success')
     },
   })
 
@@ -103,14 +109,18 @@ function App() {
           <Switch>
             <Route path="/createevent">
               {token ? (
-                <CreateEvent addEvent={addEvent} history={history} />
+                <CreateEvent
+                  addEvent={addEvent}
+                  history={history}
+                  setNotify={setNotify}
+                />
               ) : (
                 <Redirect to="/events" />
               )}
             </Route>
             <Route path="/editevent/:id">
               {token ? (
-                <EditEvent history={history} />
+                <EditEvent history={history} setNotify={setNotify} />
               ) : (
                 <Redirect to="/events" />
               )}
@@ -122,10 +132,10 @@ function App() {
               <MyEvents eventsInfo={eventsInfo} />
             </Route>
             <Route path="/events/:id">
-              <EventShow />
+              <EventShow setNotify={setNotify} />
             </Route>
             <Route path="/events">
-              <Events eventsInfo={eventsInfo} />
+              <Events eventsInfo={eventsInfo} setNotify={setNotify} />
             </Route>
             <Route path="/">POOP</Route>
           </Switch>

@@ -3,17 +3,19 @@ import { useQuery, useMutation } from '@apollo/client'
 import { Link } from 'react-router-dom'
 import { IS_LOGGED_IN, JOIN_EVENT, LEAVE_EVENT } from '../queries'
 
-const Event = ({ event, token, user }) => {
+const Event = ({ event, token, user, setNotify }) => {
   const [joinEvent] = useMutation(JOIN_EVENT)
   const [leaveEvent] = useMutation(LEAVE_EVENT)
   const joinEventClick = () => {
     joinEvent({ variables: { userId: user.id, eventId: event.id } })
-    alert(`you're going to ${event.title}`)
+    setNotify(`you're going to ${event.title}`, 'navbar-success')
   }
   const leaveEventClick = () => {
     leaveEvent({ variables: { userId: user.id, eventId: event.id } })
-    alert(`you're NO LONGER going to ${event.title}`)
+    setNotify(`you're NO LONGER going to ${event.title}`, 'navbar-error')
   }
+
+  const date = new Date(event.eventDate)
 
   const going = !event.attendees.every((person) => person?.id !== user?.id)
   const Button = () => {
@@ -54,7 +56,10 @@ const Event = ({ event, token, user }) => {
       <div className="event-info-bottom">
         <div>{event.eventType}</div>
         <div>{event.location}</div>
-        <div>{event.attendees.length}</div>
+        <div>
+          <div>{date.toLocaleDateString()}</div>
+          <div>{date.toLocaleTimeString()}</div>
+        </div>
       </div>
 
       <IsLoggedIn

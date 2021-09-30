@@ -1,12 +1,17 @@
 import { gql } from '@apollo/client'
 
-//not using this fragment
-export const AUTHOR_INFO = gql`
-  fragment AuthorInfo on Author {
-    name
-    born
-    bookCount
+//fragment - not in use
+export const USER_FIELDS = gql`
+  fragment UserFields on User {
+    username
+    pic
     id
+  }
+`
+//fragment - not working
+export const EVENT_FIELDS = gql`
+  fragment EventFields on Event {
+    title
   }
 `
 export const ALL_EVENTS = gql`
@@ -26,6 +31,10 @@ export const ALL_EVENTS = gql`
         pic
         id
       }
+      description
+      maxGuests
+      eventDate
+      createdAt
       id
     }
   }
@@ -44,17 +53,27 @@ export const ADD_EVENT = gql`
     $eventType: String
     $eventPic: String
     $location: String
+    $eventDate: Date
+    $description: String
+    $maxGuests: Int
   ) {
     addEvent(
       title: $title
       eventType: $eventType
       eventPic: $eventPic
       location: $location
+      eventDate: $eventDate
+      description: $description
+      maxGuests: $maxGuests
     ) {
       title
       eventType
       eventPic
       location
+      eventDate
+      createdAt
+      description
+      maxGuests
     }
   }
 `
@@ -64,6 +83,9 @@ export const EDIT_EVENT = gql`
     $eventType: String
     $eventPic: String
     $location: String
+    $eventDate: Date
+    $description: String
+    $maxGuests: Int
     $eventId: ID!
   ) {
     editEvent(
@@ -71,12 +93,19 @@ export const EDIT_EVENT = gql`
       eventType: $eventType
       eventPic: $eventPic
       location: $location
+      eventDate: $eventDate
+      description: $description
+      maxGuests: $maxGuests
       eventId: $eventId
     ) {
       title
       eventType
       eventPic
       location
+      description
+      maxGuests
+      eventDate
+      createdAt
       id
     }
   }
@@ -121,6 +150,11 @@ export const FIND_EVENT = gql`
         pic
         id
       }
+      description
+      maxGuests
+      eventDate
+      createdAt
+      id
     }
   }
 `
@@ -151,6 +185,10 @@ export const USER_INFO = gql`
         eventType
         eventPic
         location
+        description
+        maxGuests
+        eventDate
+        createdAt
         id
       }
     }

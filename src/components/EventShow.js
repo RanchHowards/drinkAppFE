@@ -9,7 +9,7 @@ import {
   USER_INFO,
 } from '../queries'
 
-const EventShow = ({ token }) => {
+const EventShow = ({ token, setNotify }) => {
   const id = useParams().id
 
   const eventInfo = useQuery(FIND_EVENT, {
@@ -20,17 +20,16 @@ const EventShow = ({ token }) => {
   const [joinEvent] = useMutation(JOIN_EVENT)
   const [leaveEvent] = useMutation(LEAVE_EVENT)
   if (eventInfo.loading || userInfo.loading) return <div>LOADING</div>
-  console.log(eventInfo)
-  console.log(userInfo)
+
   if (eventInfo.error || userInfo.error) return <div>ERROR</div> //make this better
 
   const joinEventClick = () => {
     joinEvent({ variables: { userId: user.id, eventId: event.id } })
-    alert(`you're going to ${event.title}`)
+    setNotify(`you're going to ${event.title}`, 'navbar-success')
   }
   const leaveEventClick = () => {
     leaveEvent({ variables: { userId: user.id, eventId: event.id } })
-    alert(`you're NO LONGER going to ${event.title}`)
+    setNotify(`you're NO LONGER going to ${event.title}`, 'navbar-error')
   }
   const event = eventInfo.data.findEvent
   const user = userInfo.data.me
@@ -64,27 +63,35 @@ const EventShow = ({ token }) => {
   }
 
   return (
-    <div className="event">
-      <div className="event-info-top">
-        <p style={{ fontSize: '100px' }}>{event.title}</p>
-        <img src={event.host.pic} alt="host" className="event-host-pic"></img>
-      </div>
-      <img src={event.eventPic} alt="event" className="event-pic"></img>
-      <div className="event-info-bottom">
-        <div>{event.eventType}</div>
-        <div>{event.location}</div>
-        <div>{event.attendees.length}</div>
-      </div>
+    <div>
+      <div className="events-container">
+        <div className="event">
+          <div className="event-info-top">
+            <p style={{ fontSize: '100px' }}>{event.title}</p>
+            <img
+              src={event.host.pic}
+              alt="host"
+              className="event-host-pic"
+            ></img>
+          </div>
+          <img src={event.eventPic} alt="event" className="event-pic"></img>
+          <div className="event-info-bottom">
+            <div>{event.eventType}</div>
+            <div>{event.location}</div>
+            <div>{event.attendees.length}</div>
+          </div>
 
-      <IsLoggedIn
-        option={
-          user?.id === event.host.id ? (
-            <Edit />
-          ) : (
-            <Button handleEvent={joinEventClick} />
-          )
-        }
-      />
+          <IsLoggedIn
+            option={
+              user?.id === event.host.id ? (
+                <Edit />
+              ) : (
+                <Button handleEvent={joinEventClick} />
+              )
+            }
+          />
+        </div>
+      </div>
     </div>
   )
 }
