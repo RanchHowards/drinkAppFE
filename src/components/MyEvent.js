@@ -2,7 +2,6 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 const MyEvent = ({ event, token, userInfo }) => {
-  console.log(event)
   return (
     <div>
       <div className="event-info-top">

@@ -143,6 +143,21 @@ ul {
   margin: 0.4rem;
   height: 40px;
 }
+.registration-container {
+  display: flex;
+  flex-flow: row;
+  justify-content: center;
+}
+.registration-form {
+  display: flex;
+  flex-flow: column;
+}
+
+.event-description {
+  background-color: lightgray;
+  margin: 1em;
+  text-align: justify;
+}
 .profile {
   border: black solid 2px;
   border-radius: 3px;
@@ -221,6 +236,20 @@ nav ul li:hover {
 .login-form {
   float: right;
   margin: 5px 10px 10px 10px;
+}
+
+.attendees-container {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  margin: 10px;
+}
+.attendee-pic {
+  width: 100px;
+  height: 100px;
+  border-radius: 160%;
+  object-fit: cover;
+  border: black solid 2px;
 }
 
 /* DISPLAY */

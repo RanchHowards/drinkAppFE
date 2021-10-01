@@ -10,6 +10,8 @@ import Register from './components/Register'
 import MyEvents from './components/MyEvents'
 import EditEvent from './components/EditEvent'
 import EventShow from './components/EventShow'
+import Attendees from './components/Attendees'
+import Host from './components/Host'
 
 import { useMutation, useApolloClient, useQuery } from '@apollo/client'
 import { CREATE_USER, LOGIN, ADD_EVENT, ALL_EVENTS } from './queries'
@@ -36,6 +38,14 @@ function App() {
     onError: (err) => {
       setNotify(err.message)
       console.log('error from createUser mutation in App.js', err)
+    },
+    onCompleted: ({ createUser }) => {
+      //join/leave buttons don't function after creation of new account
+      localStorage.setItem('user-token', login.value)
+      setToken(createUser.value)
+      isLoggedInVar(true)
+      history.push('/events')
+      setNotify('Welcome to dRank!', 'navbar-success')
     },
     // refetchQueries: [{ query: USER_INFO }],
   })
@@ -142,12 +152,21 @@ function App() {
         </div>
         {token && (
           <aside className="aside aside-1">
-            {/* <CreateEvent addEvent={addEvent} /> */}
+            <Route path="/events/:id">
+              <Attendees />
+            </Route>
           </aside>
         )}
         {token && (
           <aside className="aside aside-2">
-            <Profile />
+            <Switch>
+              <Route path="/events/:id">
+                <Host />
+              </Route>
+              <Route path="/">
+                <Profile />
+              </Route>
+            </Switch>
           </aside>
         )}
         <footer className="footer">FOOTER</footer>

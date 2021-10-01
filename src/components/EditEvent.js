@@ -130,7 +130,7 @@ const EditEvent = ({ token, setNotify }) => {
           placeholder="How's it going to be?"
           onChange={({ target }) => setDescription(target.value)}
         ></textarea>
-        <button type="submit">add Event</button>
+        <button type="submit">Edit Event</button>
       </form>
       <img src={event.eventPic} className="event-pic" alt="event"></img>
     </div>

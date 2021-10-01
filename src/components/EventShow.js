@@ -34,6 +34,8 @@ const EventShow = ({ token, setNotify }) => {
   const event = eventInfo.data.findEvent
   const user = userInfo.data.me
 
+  const date = new Date(event.eventDate)
+
   const going = !event.attendees.every((person) => person.id !== user.id)
   const Button = () => {
     if (going) {
@@ -68,19 +70,22 @@ const EventShow = ({ token, setNotify }) => {
         <div className="event">
           <div className="event-info-top">
             <p style={{ fontSize: '100px' }}>{event.title}</p>
-            <img
+            {/* <img
               src={event.host.pic}
               alt="host"
               className="event-host-pic"
-            ></img>
+            ></img> */}
           </div>
           <img src={event.eventPic} alt="event" className="event-pic"></img>
           <div className="event-info-bottom">
             <div>{event.eventType}</div>
             <div>{event.location}</div>
-            <div>{event.attendees.length}</div>
+            <div>
+              <div>{date.toLocaleDateString()}</div>
+              <div>{date.toLocaleTimeString()}</div>
+            </div>
           </div>
-
+          <div className="event-description">{event.description}</div>
           <IsLoggedIn
             option={
               user?.id === event.host.id ? (

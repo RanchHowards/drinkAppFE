@@ -143,11 +143,13 @@ export const FIND_EVENT = gql`
       location
       attendees {
         username
+        pic
         id
       }
       host {
         username
         pic
+        drink
         id
       }
       description
@@ -159,8 +161,18 @@ export const FIND_EVENT = gql`
   }
 `
 export const CREATE_USER = gql`
-  mutation createUser($username: String!, $password: String!) {
-    createUser(username: $username, password: $password) {
+  mutation createUser(
+    $username: String!
+    $password: String!
+    $drink: String
+    $pic: String
+  ) {
+    createUser(
+      username: $username
+      password: $password
+      drink: $drink
+      pic: $pic
+    ) {
       value
     }
   }
