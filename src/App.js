@@ -12,6 +12,7 @@ import EditEvent from './components/EditEvent'
 import EventShow from './components/EventShow'
 import Attendees from './components/Attendees'
 import Host from './components/Host'
+import Filter from './components/Filter'
 
 import { useMutation, useApolloClient, useQuery } from '@apollo/client'
 import { CREATE_USER, LOGIN, ADD_EVENT, ALL_EVENTS } from './queries'
@@ -19,10 +20,13 @@ import { CREATE_USER, LOGIN, ADD_EVENT, ALL_EVENTS } from './queries'
 import { isLoggedInVar } from './cache'
 
 function App() {
-  const eventsInfo = useQuery(ALL_EVENTS)
+  const events = useQuery(ALL_EVENTS)
   //STATE
   const [token, setToken] = useState(null)
   const [notification, setNotification] = useState(null)
+  const [type, setType] = useState([])
+  const [period, setPeriod] = useState(null)
+
   const client = useApolloClient()
 
   const history = useHistory()
@@ -47,13 +51,8 @@ function App() {
       history.push('/events')
       setNotify('Welcome to dRank!', 'navbar-success')
     },
-    // refetchQueries: [{ query: USER_INFO }],
   })
   const [login, loginResult] = useMutation(LOGIN, {
-    onError: (err) => {
-      setNotify(err.message)
-      console.log('error from LOGIN mutation in App.js', err)
-    },
     onCompleted({ login }) {
       if (login) {
         localStorage.setItem('user-token', login.value)
@@ -62,6 +61,10 @@ function App() {
         history.push('/events')
         setNotify('Welcome!', 'navbar-success') //could add username to notification
       }
+    },
+    onError: (err) => {
+      setNotify(err.message)
+      console.log('error from LOGIN mutation in App.js', err)
     },
   })
 
@@ -103,7 +106,30 @@ function App() {
     }
   }, [createResult.data]) //eslint-disable-line
 
-  if (eventsInfo.loading || loginResult.loading) return <div>LOADING </div>
+  if (events.error || loginResult.error) return <div>ERROR </div>
+  if (events.loading || loginResult.loading) return <div>LOADING </div>
+
+  const eventsCopy = [...events.data.allEvents]
+  const eventsCopy1 = !type.length
+    ? eventsCopy
+    : eventsCopy.filter((event) => type.includes(event.eventType))
+
+  const eventsInfo = !period // left off here. not workng correctly
+    ? eventsCopy1
+    : eventsCopy1
+        .filter((event) => new Date(event.eventDate) >= new Date())
+        .filter((event) => new Date(period) - new Date(event.eventDate) >= 0)
+
+  const PrivateRoute = ({ children, ...rest }) => {
+    return (
+      <Route
+        {...rest}
+        render={({ location }) =>
+          token ? children : <Redirect to="/events" />
+        }
+      />
+    )
+  }
 
   return (
     <div>
@@ -117,32 +143,26 @@ function App() {
       <div className="main-container">
         <div className="main">
           <Switch>
-            <Route path="/createevent">
-              {token ? (
-                <CreateEvent
-                  addEvent={addEvent}
-                  history={history}
-                  setNotify={setNotify}
-                />
-              ) : (
-                <Redirect to="/events" />
-              )}
-            </Route>
-            <Route path="/editevent/:id">
-              {token ? (
-                <EditEvent history={history} setNotify={setNotify} />
-              ) : (
-                <Redirect to="/events" />
-              )}
-            </Route>
+            <PrivateRoute path="/createevent">
+              <CreateEvent
+                addEvent={addEvent}
+                history={history}
+                setNotify={setNotify}
+              />
+            </PrivateRoute>
+            <PrivateRoute path="/editevent/:id">
+              <EditEvent history={history} setNotify={setNotify} />
+            </PrivateRoute>
+
+            <PrivateRoute path="/myevents">
+              <MyEvents eventsInfo={eventsInfo} />
+            </PrivateRoute>
+            <PrivateRoute path="/events/:id">
+              <EventShow setNotify={setNotify} />
+            </PrivateRoute>
+
             <Route path="/register">
               <Register createUser={createUser} history={history} />
-            </Route>
-            <Route path="/myevents">
-              <MyEvents eventsInfo={eventsInfo} />
-            </Route>
-            <Route path="/events/:id">
-              <EventShow setNotify={setNotify} />
             </Route>
             <Route path="/events">
               <Events eventsInfo={eventsInfo} setNotify={setNotify} />
@@ -150,25 +170,27 @@ function App() {
             <Route path="/">POOP</Route>
           </Switch>
         </div>
-        {token && (
-          <aside className="aside aside-1">
-            <Route path="/events/:id">
+        <aside className="aside aside-1">
+          <Switch>
+            <PrivateRoute path="/events/:id">
               <Attendees />
+            </PrivateRoute>
+            <Route path="/events">
+              <Filter type={type} setType={setType} setPeriod={setPeriod} />
             </Route>
-          </aside>
-        )}
-        {token && (
-          <aside className="aside aside-2">
-            <Switch>
-              <Route path="/events/:id">
-                <Host />
-              </Route>
-              <Route path="/">
-                <Profile />
-              </Route>
-            </Switch>
-          </aside>
-        )}
+          </Switch>
+        </aside>
+        <aside className="aside aside-2">
+          <Switch>
+            <PrivateRoute path="/events/:id">
+              <Host />
+            </PrivateRoute>
+            <PrivateRoute path="/">
+              <Profile />
+            </PrivateRoute>
+          </Switch>
+        </aside>
+
         <footer className="footer">FOOTER</footer>
       </div>
     </div>

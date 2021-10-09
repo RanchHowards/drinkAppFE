@@ -6,15 +6,15 @@ import { USER_INFO } from '../queries'
 const Events = ({ token, eventsInfo, setNotify }) => {
   const userInfo = useQuery(USER_INFO)
 
-  if (eventsInfo.loading || userInfo.loading) {
-    return <div>LOADING</div>
-  }
+  // if (eventsInfo.loading || userInfo.loading) {
+  //   return <div>LOADING</div>
+  // }
 
-  if (eventsInfo.error) {
-    return <div>ERROR: {eventsInfo.error}</div>
-  }
+  // if (eventsInfo.error) {
+  //   return <div>ERROR: {eventsInfo.error}</div>
+  // }
 
-  const copy = [...eventsInfo.data.allEvents] //had to create a copy in order to get the SORT method to work
+  const copy = [...eventsInfo] //had to create a copy in order to get the SORT method to work
   const events = copy.sort(
     (a, b) => new Date(b.eventDate) - new Date(a.eventDate)
   )

@@ -11,22 +11,26 @@ const Navbar = ({ login, createUser, signOut, token, notification }) => {
     event.stopPropagation()
     if (!showForm) {
       setShowForm(true)
-    } else {
+    } else if (username && password) {
       login({ variables: { username, password } })
 
       setShowForm(false)
       setUsername('')
       setPassword('')
+    } else {
+      setShowForm(false)
     }
   }
   if (notification) {
     return <Notification notification={notification} />
   }
   return (
-    <div className="navbar">
+    <nav className="navbar">
       <div className="navbar-container">
         <div>
-          <strong>DrANK</strong>
+          <Link to="/events">
+            <strong>DrANK</strong>
+          </Link>
         </div>
         {!token && (
           <nav>
@@ -81,7 +85,7 @@ const Navbar = ({ login, createUser, signOut, token, notification }) => {
           </div>
         </form>
       )}
-    </div>
+    </nav>
   )
 }
 

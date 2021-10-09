@@ -1,54 +1,15 @@
 import React from 'react'
-import { useQuery, useMutation } from '@apollo/client'
+import BigButton from './BigButton'
 import { Link } from 'react-router-dom'
-import { IS_LOGGED_IN, JOIN_EVENT, LEAVE_EVENT } from '../queries'
 
 const Event = ({ event, token, user, setNotify }) => {
-  const [joinEvent] = useMutation(JOIN_EVENT)
-  const [leaveEvent] = useMutation(LEAVE_EVENT)
-  const joinEventClick = () => {
-    joinEvent({ variables: { userId: user.id, eventId: event.id } })
-    setNotify(`you're going to ${event.title}`, 'navbar-success')
-  }
-  const leaveEventClick = () => {
-    leaveEvent({ variables: { userId: user.id, eventId: event.id } })
-    setNotify(`you're NO LONGER going to ${event.title}`, 'navbar-error')
-  }
-
   const date = new Date(event.eventDate)
 
-  const going = !event.attendees.every((person) => person?.id !== user?.id)
-  const Button = () => {
-    if (going) {
-      return (
-        <button onClick={leaveEventClick} className="leave-button">
-          LEAVE
-        </button>
-      )
-    }
-    return (
-      <button onClick={joinEventClick} className="join-button">
-        JOIN
-      </button>
-    )
-  }
-  const Edit = () => {
-    return (
-      <Link to={`/editevent/${event.id}`}>
-        <button className="edit-button">Edit</button>
-      </Link>
-    )
-  }
-
-  const IsLoggedIn = ({ option }) => {
-    const { data } = useQuery(IS_LOGGED_IN)
-    return data.isLoggedIn ? option : null
-  }
   return (
     <div>
       <div className="event-info-top">
         <Link to={`/events/${event.id}`}>
-          <p style={{ fontSize: '100px' }}>{event.title}</p>
+          <p style={{ fontSize: '60px' }}>{event.title}</p>
         </Link>
         <img src={event.host.pic} alt="host" className="event-host-pic"></img>
       </div>
@@ -62,15 +23,7 @@ const Event = ({ event, token, user, setNotify }) => {
         </div>
       </div>
 
-      <IsLoggedIn
-        option={
-          user?.id === event.host.id ? (
-            <Edit />
-          ) : (
-            <Button handleEvent={joinEventClick} />
-          )
-        }
-      />
+      <BigButton event={event} user={user} setNotify={setNotify} />
     </div>
   )
 }

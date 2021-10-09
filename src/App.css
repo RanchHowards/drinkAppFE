@@ -1,6 +1,8 @@
 body {
   margin: 0;
+  font-family: 'Roboto', 'cursive';
 }
+
 input {
   border: black 2px solid;
   border-radius: 3px;
@@ -41,6 +43,7 @@ ul {
 
 .event {
   min-width: 400px;
+  max-width: 500px;
   border: black solid 2px;
   border-radius: 3px;
 
@@ -62,16 +65,20 @@ ul {
   display: flex;
   font-size: 45px;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-end;
+  margin-bottom: 10px;
 }
 .event-info-bottom {
   display: flex;
   justify-content: space-between;
 }
 
-.join-button,
-.edit-button,
-.leave-button {
+.event-form > *,
+.registration-form > * {
+  margin: 0.4rem;
+  height: 40px;
+}
+.button {
   display: inline-block;
   border: black solid 2px;
   background-color: rgb(255, 255, 255);
@@ -83,6 +90,21 @@ ul {
   width: 95%;
   margin: 10px;
   font-size: 30px;
+}
+.full-button {
+  background-color: rgb(204, 204, 204);
+  color: black;
+}
+
+.register-button {
+  width: inherit;
+  background-color: black;
+  color: azure;
+  margin: 0.4rem;
+}
+.register-button:hover {
+  background-color: green;
+  color: azure;
 }
 .join-button:hover {
   background-color: black;
@@ -139,10 +161,6 @@ ul {
   display: flex;
   flex-flow: column;
 }
-.event-form > * {
-  margin: 0.4rem;
-  height: 40px;
-}
 .registration-container {
   display: flex;
   flex-flow: row;
@@ -155,7 +173,9 @@ ul {
 
 .event-description {
   background-color: lightgray;
-  margin: 1em;
+  margin: 10px 0;
+  width: 92%;
+  justify-self: center;
   text-align: justify;
 }
 .profile {
@@ -282,14 +302,13 @@ nav ul li:hover {
 @media all and (min-width: 800px) {
   .main {
     flex: 3 0px;
+    order: 2;
   }
 
   .aside-1 {
     order: 1;
   }
-  .main {
-    order: 2;
-  }
+
   .aside-2 {
     order: 3;
   }

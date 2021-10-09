@@ -14,47 +14,38 @@ const Register = ({ createUser, history }) => {
   }
 
   return (
-    <div className="registration-container">
-      <div className="registration-form">
-        <h2 style={{ margin: '0 0 10px 0' }}>Register</h2>
-        <form onSubmit={signUp}>
-          <label>
-            Username
-            <input
-              value={username}
-              placeholder="username"
-              onChange={({ target }) => setUsername(target.value)}
-            ></input>
-          </label>
-          <label>
-            Password
-            <input
-              value={password}
-              placeholder="password"
-              onChange={({ target }) => setPassword(target.value)}
-              type="password"
-            ></input>
-          </label>
-          <label>
-            Pic
-            <input
-              value={pic}
-              placeholder="pic"
-              onChange={({ target }) => setPic(target.value)}
-            ></input>
-          </label>
-          <label>
-            Drink of Choice
-            <input
-              value={drink}
-              placeholder="drink"
-              onChange={({ target }) => setDrink(target.value)}
-            ></input>
-          </label>
+    <div className="create-event-container">
+      {/* <h2 style={{ margin: '0 0 10px 0' }}>Register</h2> */}
+      <form className="registration-form" onSubmit={signUp}>
+        <input
+          value={username}
+          placeholder="username"
+          required
+          onChange={({ target }) => setUsername(target.value)}
+        ></input>
+        <input
+          value={password}
+          placeholder="password"
+          onChange={({ target }) => setPassword(target.value)}
+          required
+          type="password"
+        ></input>
 
-          <button type="submit">Register</button>
-        </form>
-      </div>
+        <input
+          value={pic}
+          placeholder="pic"
+          onChange={({ target }) => setPic(target.value)}
+        ></input>
+        <input
+          value={drink}
+          placeholder="drink"
+          required
+          onChange={({ target }) => setDrink(target.value)}
+        ></input>
+        <button className="button register-button" type="submit">
+          Register
+        </button>
+      </form>
     </div>
   )
 }

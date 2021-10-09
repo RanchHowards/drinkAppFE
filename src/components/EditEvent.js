@@ -17,8 +17,12 @@ const EditEvent = ({ token, setNotify }) => {
       setLocation(data.findEvent.location)
       setEventType(data.findEvent.eventType)
       setDescription(data.findEvent.description)
-      setMaxGuests(data.findEvent.maxGuests)
       setEventDate(data.findEvent.eventDate)
+      if (!data.findEvent.maxGuests) {
+        setMaxGuests('')
+      } else {
+        setMaxGuests(data.findEvent.maxGuests)
+      }
     },
   })
 
@@ -76,6 +80,7 @@ const EditEvent = ({ token, setNotify }) => {
               value="BYOB"
               type="radio"
               name="event type"
+              checked={eventType === 'BYOB'}
               onChange={({ target }) => setEventType(target.value)}
             ></input>
           </label>
@@ -85,6 +90,7 @@ const EditEvent = ({ token, setNotify }) => {
               value="Bar"
               type="radio"
               name="event type"
+              checked={eventType === 'Bar'}
               onChange={({ target }) => setEventType(target.value)}
             ></input>
           </label>
@@ -94,6 +100,7 @@ const EditEvent = ({ token, setNotify }) => {
               value="Club"
               type="radio"
               name="event type"
+              checked={eventType === 'Club'}
               onChange={({ target }) => setEventType(target.value)}
             ></input>
           </label>
@@ -116,9 +123,15 @@ const EditEvent = ({ token, setNotify }) => {
         <input
           value={maxGuests}
           type="number"
-          min="2"
+          min="2" //problmes here need to fx
           placeholder="no limit"
-          onChange={({ target }) => setMaxGuests(parseInt(target.value))} //changing to an Integer from String
+          onChange={({ target }) => {
+            if (!target.value) {
+              setMaxGuests(undefined)
+            } else {
+              setMaxGuests(parseInt(target.value))
+            }
+          }} //changing to an Integer from String
         ></input>
         <input
           value={eventDate}
@@ -130,7 +143,13 @@ const EditEvent = ({ token, setNotify }) => {
           placeholder="How's it going to be?"
           onChange={({ target }) => setDescription(target.value)}
         ></textarea>
-        <button type="submit">Edit Event</button>
+        <button
+          type="submit"
+          className="button"
+          style={{ alignSelf: 'center' }}
+        >
+          Edit Event
+        </button>
       </form>
       <img src={event.eventPic} className="event-pic" alt="event"></img>
     </div>

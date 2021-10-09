@@ -10,6 +10,9 @@ const Profile = () => {
   if (error) {
     return <div>ERROR: {error.message}</div>
   }
+  if (!data.me) {
+    return <div>NO DATA</div>
+  }
 
   return (
     <div className="profile">

@@ -12,32 +12,33 @@ export const USER_FIELDS = gql`
 export const EVENT_FIELDS = gql`
   fragment EventFields on Event {
     title
+    eventType
+    eventPic
+    location
+    attendees {
+      username
+      pic
+      id
+    }
+    host {
+      username
+      pic
+      id
+    }
+    description
+    maxGuests
+    eventDate
+    createdAt
+    id
   }
 `
 export const ALL_EVENTS = gql`
   query {
     allEvents {
-      title
-      eventType
-      eventPic
-      location
-      attendees {
-        username
-        pic
-        id
-      }
-      host {
-        username
-        pic
-        id
-      }
-      description
-      maxGuests
-      eventDate
-      createdAt
-      id
+      ...EventFields
     }
   }
+  ${EVENT_FIELDS}
 `
 export const ALL_USERS = gql`
   query {
@@ -137,28 +138,10 @@ export const LEAVE_EVENT = gql`
 export const FIND_EVENT = gql`
   query findEvent($eventId: ID!) {
     findEvent(eventId: $eventId) {
-      title
-      eventType
-      eventPic
-      location
-      attendees {
-        username
-        pic
-        id
-      }
-      host {
-        username
-        pic
-        drink
-        id
-      }
-      description
-      maxGuests
-      eventDate
-      createdAt
-      id
+      ...EventFields
     }
   }
+  ${EVENT_FIELDS}
 `
 export const CREATE_USER = gql`
   mutation createUser(

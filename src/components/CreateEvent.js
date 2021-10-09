@@ -1,8 +1,5 @@
 import React, { useState } from 'react'
 
-// import { useMutation } from '@apollo/client'
-// import { ADD_EVENT, ALL_EVENTS } from '../queries'
-
 const CreateEvent = ({ addEvent, history }) => {
   const [eventName, setEventName] = useState('')
   const [eventType, setEventType] = useState('BYOB')
@@ -100,7 +97,13 @@ const CreateEvent = ({ addEvent, history }) => {
           placeholder="How's it going to be?"
           onChange={({ target }) => setDescription(target.value)}
         ></textarea>
-        <button type="submit">add Event</button>
+        <button
+          className="button"
+          style={{ alignSelf: 'center' }}
+          type="submit"
+        >
+          add Event
+        </button>
       </form>
     </div>
   )

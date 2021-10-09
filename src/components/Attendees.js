@@ -24,7 +24,7 @@ const Attendees = () => {
             <li key={person.id}>
               <img
                 src={person.pic}
-                alt="attendee"
+                alt={person.username}
                 className="attendee-pic"
               ></img>
             </li>
