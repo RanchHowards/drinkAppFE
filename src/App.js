@@ -60,15 +60,30 @@ function App() {
     onCompleted({ login }) {
       if (login) {
         localStorage.setItem('user-token', login.value)
-        userInfo.refetch()
+
         setToken(login.value)
         isLoggedInVar(true)
-        setNotify('Welcome!', 'navbar-success') //could add username to notification
+        history.push('/events')
+        setNotify(`Welcome ${login.user.username}!`, 'navbar-success')
       }
     },
     onError: (err) => {
       setNotify(err.message)
       console.log('error from LOGIN mutation in App.js', err)
+    },
+    update: (store, response) => {
+      try {
+        const dataInStore = store.readQuery({ query: USER_INFO })
+        store.writeQuery({
+          query: USER_INFO,
+          data: {
+            ...dataInStore,
+            me: response.data.login.user,
+          },
+        })
+      } catch (err) {
+        throw new Error(err.message)
+      }
     },
   })
 

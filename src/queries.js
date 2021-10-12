@@ -8,9 +8,20 @@ export const USER_FIELDS = gql`
     id
   }
 `
-//fragment - not working
 export const EVENT_FIELDS = gql`
   fragment EventFields on Event {
+    title
+    eventType
+    eventPic
+    location
+    description
+    maxGuests
+    eventDate
+    createdAt
+  }
+`
+export const NESTED_EVENT_FIELDS = gql`
+  fragment NestedEventFields on Event {
     title
     eventType
     eventPic
@@ -35,10 +46,10 @@ export const EVENT_FIELDS = gql`
 export const ALL_EVENTS = gql`
   query {
     allEvents {
-      ...EventFields
+      ...NestedEventFields
     }
   }
-  ${EVENT_FIELDS}
+  ${NESTED_EVENT_FIELDS}
 `
 export const ALL_USERS = gql`
   query {
@@ -67,16 +78,10 @@ export const ADD_EVENT = gql`
       description: $description
       maxGuests: $maxGuests
     ) {
-      title
-      eventType
-      eventPic
-      location
-      eventDate
-      createdAt
-      description
-      maxGuests
+      ...EventFields
     }
   }
+  ${EVENT_FIELDS}
 `
 export const EDIT_EVENT = gql`
   mutation editEvent(
@@ -99,17 +104,11 @@ export const EDIT_EVENT = gql`
       maxGuests: $maxGuests
       eventId: $eventId
     ) {
-      title
-      eventType
-      eventPic
-      location
-      description
-      maxGuests
-      eventDate
-      createdAt
+      ...EventFields
       id
     }
   }
+  ${EVENT_FIELDS}
 `
 export const JOIN_EVENT = gql`
   mutation joinEvent($userId: ID!, $eventId: ID!) {
@@ -138,10 +137,10 @@ export const LEAVE_EVENT = gql`
 export const FIND_EVENT = gql`
   query findEvent($eventId: ID!) {
     findEvent(eventId: $eventId) {
-      ...EventFields
+      ...NestedEventFields
     }
   }
-  ${EVENT_FIELDS}
+  ${NESTED_EVENT_FIELDS}
 `
 export const CREATE_USER = gql`
   mutation createUser(
@@ -165,8 +164,19 @@ export const LOGIN = gql`
   mutation login($username: String!, $password: String!) {
     login(username: $username, password: $password) {
       value
+      user {
+        username
+        id
+        drink
+        pic
+        myEvents {
+          ...EventFields
+          id
+        }
+      }
     }
   }
+  ${EVENT_FIELDS}
 `
 export const USER_INFO = gql`
   query {
@@ -176,18 +186,12 @@ export const USER_INFO = gql`
       drink
       pic
       myEvents {
-        title
-        eventType
-        eventPic
-        location
-        description
-        maxGuests
-        eventDate
-        createdAt
+        ...EventFields
         id
       }
     }
   }
+  ${EVENT_FIELDS}
 `
 export const IS_LOGGED_IN = gql`
   query IsUserLoggedIn {

@@ -2,7 +2,7 @@ import React from 'react'
 import BigButton from './BigButton'
 import { Link } from 'react-router-dom'
 
-const Event = ({ event, token, setNotify }) => {
+const Event = ({ event, setNotify }) => {
   const date = new Date(event.eventDate)
 
   return (

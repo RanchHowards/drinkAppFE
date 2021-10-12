@@ -20,7 +20,6 @@ export const typeDefs = gql`
     isLoggedIn: Boolean!
   }
 `
-//left off above trying to set up local state
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem('user-token')
 

@@ -15,23 +15,42 @@ const BigButton = ({ event, setNotify }) => {
   const userInfo = useQuery(USER_INFO)
 
   const [joinEvent] = useMutation(JOIN_EVENT, {
-    // update: (store, response) => {
-    //   try {
-    //     const dataInStore = store.readQuery({ query: ALL_EVENTS })
-    //     store.writeQuery({
-    //       query: ALL_EVENTS,
-    //       data: {
-    //         ...dataInStore,
-    //         allEvents: [...dataInStore.allEvents, response.data.joinEvent],
-    //       },
-    //     })
-    //   } catch (err) {
-    //     throw new Error(err.message)
-    //   }
-    // },
+    update: (store, response) => {
+      try {
+        const updatedEvent = response.data.joinEvent
+        const dataInStore = store.readQuery({ query: ALL_EVENTS })
+        store.writeQuery({
+          query: ALL_EVENTS,
+          data: {
+            ...dataInStore,
+            allEvents: dataInStore.allEvents.filter((e) =>
+              e.id !== updatedEvent.id ? e : updatedEvent
+            ),
+          },
+        })
+      } catch (err) {
+        throw new Error(err.message)
+      }
+    },
   })
   const [leaveEvent] = useMutation(LEAVE_EVENT, {
-    refetchQueries: [{ query: ALL_EVENTS }],
+    update: (store, response) => {
+      try {
+        const updatedEvent = response.data.leaveEvent
+        const dataInStore = store.readQuery({ query: ALL_EVENTS })
+        store.writeQuery({
+          query: ALL_EVENTS,
+          data: {
+            ...dataInStore,
+            allEvents: dataInStore.allEvents.filter((e) =>
+              e.id !== updatedEvent.id ? e : updatedEvent
+            ),
+          },
+        })
+      } catch (err) {
+        throw new Error(err.message)
+      }
+    },
   })
 
   if (userInfo.loading) return <div>LOADING</div>

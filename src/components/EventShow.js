@@ -14,7 +14,13 @@ const EventShow = ({ token, setNotify }) => {
 
   if (eventInfo.loading || userInfo.loading) return <div>LOADING</div>
 
-  if (eventInfo.error || userInfo.error) return <div>ERROR</div> //make this better
+  if (eventInfo.error || userInfo.error)
+    return (
+      <div>
+        ERROR{' '}
+        {eventInfo.error ? eventInfo.error.message : userInfo.error.message}
+      </div>
+    )
 
   const event = eventInfo.data.findEvent
   const user = userInfo.data.me
@@ -23,7 +29,6 @@ const EventShow = ({ token, setNotify }) => {
 
   const descCont = { display: 'flex', justifyContent: 'center' }
   const showContainer = { display: 'flex', justifyContent: 'center' }
-  // const eventAlign = {  justifyContent: 'center' }
 
   return (
     <div style={showContainer}>
@@ -37,7 +42,9 @@ const EventShow = ({ token, setNotify }) => {
           <div>{event.location}</div>
           <div>
             <div>{date.toLocaleDateString()}</div>
-            <div>{date.toLocaleTimeString()}</div>
+            <div style={{ textAlign: 'center' }}>
+              {date.toLocaleTimeString().slice(0, 5)}
+            </div>
           </div>
         </div>
         <div style={descCont}>
