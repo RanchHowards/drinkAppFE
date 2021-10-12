@@ -2,7 +2,7 @@ import React from 'react'
 import BigButton from './BigButton'
 import { Link } from 'react-router-dom'
 
-const Event = ({ event, token, user, setNotify }) => {
+const Event = ({ event, token, setNotify }) => {
   const date = new Date(event.eventDate)
 
   return (
@@ -19,11 +19,13 @@ const Event = ({ event, token, user, setNotify }) => {
         <div>{event.location}</div>
         <div>
           <div>{date.toLocaleDateString()}</div>
-          <div>{date.toLocaleTimeString()}</div>
+          <div style={{ textAlign: 'center' }}>
+            {date.toLocaleTimeString().slice(0, 5)}
+          </div>
         </div>
       </div>
 
-      <BigButton event={event} user={user} setNotify={setNotify} />
+      <BigButton event={event} setNotify={setNotify} />
     </div>
   )
 }

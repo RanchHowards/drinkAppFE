@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Notification from './Notification'
 
-const Navbar = ({ login, createUser, signOut, token, notification }) => {
+const Navbar = ({ login, signOut, token, notification }) => {
   const [showForm, setShowForm] = useState(false)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -27,7 +27,7 @@ const Navbar = ({ login, createUser, signOut, token, notification }) => {
   return (
     <nav className="navbar">
       <div className="navbar-container">
-        <div>
+        <div onClick={() => setShowForm(false)}>
           <Link to="/events">
             <strong>DrANK</strong>
           </Link>
@@ -37,7 +37,7 @@ const Navbar = ({ login, createUser, signOut, token, notification }) => {
             <ul>
               <li onClick={signIn}>Sign In</li>
               <Link to="/register">
-                <li> Sign Up</li>
+                <li onClick={() => setShowForm(false)}> Sign Up</li>
               </Link>
             </ul>
           </nav>

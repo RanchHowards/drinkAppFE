@@ -1,21 +1,25 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
-const Register = ({ createUser, history }) => {
+const Register = ({ createUser, history, createResult }) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [pic, setPic] = useState('')
   const [drink, setDrink] = useState('')
 
-  const signUp = (event) => {
-    event.preventDefault()
-    createUser({ variables: { username, password, pic, drink } })
+  useEffect(() => {
     setUsername('')
     setPassword('')
+    setPassword('')
+    setPassword('')
+  }, [])
+
+  const signUp = async (event) => {
+    event.preventDefault()
+    createUser({ variables: { username, password, pic, drink } })
   }
 
   return (
     <div className="create-event-container">
-      {/* <h2 style={{ margin: '0 0 10px 0' }}>Register</h2> */}
       <form className="registration-form" onSubmit={signUp}>
         <input
           value={username}

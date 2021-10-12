@@ -1,51 +1,67 @@
 import React from 'react'
 
 const Filter = ({ type, setType, setPeriod }) => {
+  const d = new Date()
+  const date = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1)
   const today = () => {
-    let d = new Date()
-    d.setHours(23)
-    d.setMinutes(59)
-    d.setSeconds(59)
-    return d
+    setPeriod(date)
   }
-  const week = new Date(today().setDate(today().getDate() + 6))
+  const week = () => {
+    const week = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 7)
+    setPeriod(week)
+  }
 
   const handleType = (value) => {
     if (type.includes(value)) {
       setType(type.filter((t) => t !== value))
     } else setType(type.concat(value))
   }
+
   return (
     <>
       <div>
-        <button value={null} onClick={({ target }) => setPeriod(target.value)}>
-          ALL
-        </button>
         <button
-          value={today()}
+          className="button filter-button"
+          value={null}
           onClick={({ target }) => setPeriod(target.value)}
         >
+          ALL
+        </button>
+        <button className="button filter-button" onClick={() => today()}>
           Today
         </button>
-        <button value={week} onClick={({ target }) => setPeriod(target.value)}>
+        <button className="button filter-button" onClick={() => week()}>
           This Week
         </button>
       </div>
-      <div>
-        <input type="checkbox" value="Bar" onClick={() => handleType('Bar')} />
-        Bar
-        <input
-          type="checkbox"
-          value="BYOB"
-          onClick={() => handleType('BYOB')}
-        />
-        BYOB
-        <input
-          type="checkbox"
-          value="Club"
-          onClick={() => handleType('Club')}
-        />
-        Club
+      <div className="filter-checkboxes">
+        <label>
+          <input
+            type="checkbox"
+            value="Bar"
+            checked={type.includes('Bar')}
+            onChange={() => handleType('Bar')}
+          />
+          Bar
+        </label>
+        <label>
+          <input
+            type="checkbox"
+            value="BYOB"
+            checked={type.includes('BYOB')}
+            onChange={() => handleType('BYOB')}
+          />
+          BYOB
+        </label>
+        <label>
+          <input
+            type="checkbox"
+            checked={type.includes('Club')}
+            value="Club"
+            onChange={() => handleType('Club')}
+          />
+          Club
+        </label>
       </div>
     </>
   )

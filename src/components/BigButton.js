@@ -1,13 +1,43 @@
 import React from 'react'
 import { useQuery, useMutation } from '@apollo/client'
-import { IS_LOGGED_IN, JOIN_EVENT, LEAVE_EVENT } from '../queries'
+import {
+  ALL_EVENTS,
+  IS_LOGGED_IN,
+  JOIN_EVENT,
+  LEAVE_EVENT,
+  USER_INFO,
+} from '../queries'
 import { Link } from 'react-router-dom'
 
-const BigButton = ({ event, user, setNotify }) => {
+const BigButton = ({ event, setNotify }) => {
   const { data } = useQuery(IS_LOGGED_IN)
 
-  const [joinEvent] = useMutation(JOIN_EVENT)
-  const [leaveEvent] = useMutation(LEAVE_EVENT)
+  const userInfo = useQuery(USER_INFO)
+
+  const [joinEvent] = useMutation(JOIN_EVENT, {
+    // update: (store, response) => {
+    //   try {
+    //     const dataInStore = store.readQuery({ query: ALL_EVENTS })
+    //     store.writeQuery({
+    //       query: ALL_EVENTS,
+    //       data: {
+    //         ...dataInStore,
+    //         allEvents: [...dataInStore.allEvents, response.data.joinEvent],
+    //       },
+    //     })
+    //   } catch (err) {
+    //     throw new Error(err.message)
+    //   }
+    // },
+  })
+  const [leaveEvent] = useMutation(LEAVE_EVENT, {
+    refetchQueries: [{ query: ALL_EVENTS }],
+  })
+
+  if (userInfo.loading) return <div>LOADING</div>
+  else if (userInfo.error) return <div>{userInfo.error.message}</div>
+
+  const user = userInfo.data.me
 
   const going = !event.attendees.every((person) => person?.id !== user?.id)
 

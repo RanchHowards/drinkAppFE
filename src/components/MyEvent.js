@@ -17,7 +17,9 @@ const MyEvent = ({ event, token, userInfo }) => {
         <div>{event.location}</div>
         <div>
           <div>{date.toLocaleDateString()}</div>
-          <div>{date.toLocaleTimeString()}</div>
+          <div style={{ textAlign: 'center' }}>
+            {date.toLocaleTimeString().slice(0, 5)}
+          </div>
         </div>
       </div>
       <Link to={`/editevent/${event.id}`}>
