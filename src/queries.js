@@ -36,6 +36,15 @@ export const NESTED_EVENT_FIELDS = gql`
       pic
       id
     }
+    comments {
+      comment
+      author {
+        username
+        id
+        pic
+      }
+      id
+    }
     description
     maxGuests
     eventDate
@@ -156,8 +165,18 @@ export const CREATE_USER = gql`
       pic: $pic
     ) {
       value
+      user {
+        username
+        pic
+        drink
+        id
+        myEvents {
+          ...EventFields
+        }
+      }
     }
   }
+  ${EVENT_FIELDS}
 `
 
 export const LOGIN = gql`
@@ -196,5 +215,22 @@ export const USER_INFO = gql`
 export const IS_LOGGED_IN = gql`
   query IsUserLoggedIn {
     isLoggedIn @client
+  }
+`
+export const CREATE_COMMENT = gql`
+  mutation createComment($eventId: ID!, $comment: String!, $inResponseTo: ID) {
+    createComment(
+      eventId: $eventId
+      comment: $comment
+      inResponseTo: $inResponseTo
+    ) {
+      comment
+      id
+      author {
+        username
+        id
+        pic
+      }
+    }
   }
 `

@@ -51,6 +51,20 @@ function App() {
       setNotify('Welcome to dRank!', 'navbar-success')
       userInfo.refetch()
     },
+    update: (store, response) => {
+      try {
+        const dataInStore = store.readQuery({ query: USER_INFO })
+        store.writeQuery({
+          query: USER_INFO,
+          data: { ...dataInStore, me: response.data.createUser.user },
+        })
+      } catch (err) {
+        throw new Error(
+          'error from App.js trying to write to Cache from createUser',
+          err.message
+        )
+      }
+    },
     onError: (err) => {
       setNotify(err.message)
       console.log('error from createUser mutation in App.js', err)
@@ -82,7 +96,10 @@ function App() {
           },
         })
       } catch (err) {
-        throw new Error(err.message)
+        throw new Error(
+          'error from App.js trying to write to Cache from createUser',
+          err.message
+        )
       }
     },
   })

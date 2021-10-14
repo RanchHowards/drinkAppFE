@@ -34,12 +34,12 @@ const EditEvent = ({ token, setNotify }) => {
   })
 
   const [eventName, setEventName] = useState('')
-  const [eventType, setEventType] = useState('') //needs to be figured out
+  const [eventType, setEventType] = useState('')
   const [eventPic, setEventPic] = useState('')
   const [location, setLocation] = useState('')
   const [description, setDescription] = useState('')
   const [eventDate, setEventDate] = useState('')
-  const [maxGuests, setMaxGuests] = useState('')
+  const [maxGuests, setMaxGuests] = useState('') //problem with this in console
 
   const handleEvent = (event) => {
     event.preventDefault()

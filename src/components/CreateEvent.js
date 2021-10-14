@@ -7,7 +7,7 @@ const CreateEvent = ({ addEvent, history }) => {
   const [location, setLocation] = useState('')
   const [description, setDescription] = useState('')
   const [eventDate, setEventDate] = useState(undefined)
-  const [maxGuests, setMaxGuests] = useState(undefined)
+  const [maxGuests, setMaxGuests] = useState(undefined) //problem with this in console
 
   const handleEvent = (event) => {
     event.preventDefault()

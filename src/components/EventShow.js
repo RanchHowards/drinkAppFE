@@ -2,6 +2,7 @@ import React from 'react'
 import { useQuery } from '@apollo/client'
 import { useParams } from 'react-router-dom'
 import BigButton from './BigButton'
+import Comments from './Comments'
 import { FIND_EVENT, USER_INFO } from '../queries'
 
 const EventShow = ({ token, setNotify }) => {
@@ -51,6 +52,7 @@ const EventShow = ({ token, setNotify }) => {
           <div className="event-description">{event.description}</div>
         </div>
         <BigButton event={event} user={user} setNotify={setNotify} />
+        <Comments event={event} />
       </div>
     </div>
   )
