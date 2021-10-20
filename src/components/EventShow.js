@@ -26,6 +26,10 @@ const EventShow = ({ token, setNotify }) => {
   const event = eventInfo.data.findEvent
   const user = userInfo.data.me
 
+  console.log(new Date(event.eventDate))
+
+  const going = !event.attendees.every((person) => person?.id !== user?.id)
+
   const date = new Date(event.eventDate)
 
   const descCont = { display: 'flex', justifyContent: 'center' }
@@ -51,8 +55,13 @@ const EventShow = ({ token, setNotify }) => {
         <div style={descCont}>
           <div className="event-description">{event.description}</div>
         </div>
-        <BigButton event={event} user={user} setNotify={setNotify} />
-        <Comments event={event} />
+        <BigButton
+          event={event}
+          user={user}
+          setNotify={setNotify}
+          going={going}
+        />
+        <Comments going={going} event={event} />
       </div>
     </div>
   )

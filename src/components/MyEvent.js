@@ -3,6 +3,10 @@ import { Link } from 'react-router-dom'
 
 const MyEvent = ({ event, token, userInfo }) => {
   const date = new Date(event.eventDate)
+  const t = new Date()
+  const today = new Date(t.getFullYear(), t.getMonth(), t.getDate())
+  const active = date >= today
+
   return (
     <div>
       <div className="event-info-top">
@@ -22,9 +26,11 @@ const MyEvent = ({ event, token, userInfo }) => {
           </div>
         </div>
       </div>
-      <Link to={`/editevent/${event.id}`}>
-        <button className="edit-button button">EDIT</button>
-      </Link>
+      {active && (
+        <Link to={`/editevent/${event.id}`}>
+          <button className="edit-button button">EDIT</button>
+        </Link>
+      )}
     </div>
   )
 }

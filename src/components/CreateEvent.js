@@ -6,11 +6,13 @@ const CreateEvent = ({ addEvent, history }) => {
   const [eventPic, setEventPic] = useState(undefined)
   const [location, setLocation] = useState('')
   const [description, setDescription] = useState('')
-  const [eventDate, setEventDate] = useState(undefined)
-  const [maxGuests, setMaxGuests] = useState(undefined) //problem with this in console
+  const [eventDate, setEventDate] = useState('')
+  const [max, setMax] = useState(false)
+  const [maxGuests, setMaxGuests] = useState(0) //problem with this in console
 
   const handleEvent = (event) => {
     event.preventDefault()
+    const inputDate = eventDate === '' ? new Date() : eventDate
 
     addEvent({
       variables: {
@@ -19,7 +21,8 @@ const CreateEvent = ({ addEvent, history }) => {
         eventPic,
         location,
         description,
-        eventDate,
+        eventDate: inputDate,
+        max,
         maxGuests,
       },
     })
@@ -29,7 +32,7 @@ const CreateEvent = ({ addEvent, history }) => {
     setLocation('')
     setDescription('')
     setEventDate('')
-    setMaxGuests('')
+    setMaxGuests(0)
     history.push('/events')
   }
 
@@ -80,13 +83,23 @@ const CreateEvent = ({ addEvent, history }) => {
           placeholder="Location"
           onChange={({ target }) => setLocation(target.value)}
         ></input>
-        <input
-          value={maxGuests}
-          type="number"
-          min="2"
-          placeholder="no limit"
-          onChange={({ target }) => setMaxGuests(parseInt(target.value))}
-        ></input>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <label>
+            Max?
+            <input
+              type="checkbox"
+              checked={max}
+              onChange={({ target }) => setMax(target.checked)}
+            ></input>
+          </label>
+          <input
+            style={max ? { display: true } : { display: 'none' }}
+            value={maxGuests}
+            type="number"
+            min="0"
+            onChange={({ target }) => setMaxGuests(parseInt(target.value))}
+          ></input>
+        </div>
         <input
           value={eventDate}
           type="datetime-local"

@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
 import { useQuery, useMutation } from '@apollo/client'
 import { useParams, useHistory } from 'react-router-dom'
-import { ALL_EVENTS, EDIT_EVENT, FIND_EVENT } from '../queries'
+import { ALL_EVENTS, EDIT_EVENT, FIND_EVENT, DELETE_EVENT } from '../queries'
+
+import { cache } from '../cache'
 
 const EditEvent = ({ token, setNotify }) => {
   const history = useHistory()
@@ -17,12 +19,16 @@ const EditEvent = ({ token, setNotify }) => {
       setLocation(data.findEvent.location)
       setEventType(data.findEvent.eventType)
       setDescription(data.findEvent.description)
-      setEventDate(data.findEvent.eventDate)
-      if (!data.findEvent.maxGuests) {
-        setMaxGuests('')
-      } else {
-        setMaxGuests(data.findEvent.maxGuests)
-      }
+      setMax(data.findEvent.max)
+      const date = data.findEvent.eventDate
+      setEventDate(
+        `${date.slice(0, 4)}-${date.slice(5, 7)}-${date.slice(
+          8,
+          10
+        )}T${new Date(date).toLocaleTimeString().slice(0, 5)}`
+      )
+
+      setMaxGuests(data.findEvent.maxGuests)
     },
   })
 
@@ -33,13 +39,16 @@ const EditEvent = ({ token, setNotify }) => {
     refetchQueries: [{ query: ALL_EVENTS }],
   })
 
+  const [deleteEvent] = useMutation(DELETE_EVENT)
+
   const [eventName, setEventName] = useState('')
   const [eventType, setEventType] = useState('')
   const [eventPic, setEventPic] = useState('')
   const [location, setLocation] = useState('')
   const [description, setDescription] = useState('')
   const [eventDate, setEventDate] = useState('')
-  const [maxGuests, setMaxGuests] = useState('') //problem with this in console
+  const [max, setMax] = useState('')
+  const [maxGuests, setMaxGuests] = useState(0) //problem with this in console
 
   const handleEvent = (event) => {
     event.preventDefault()
@@ -52,6 +61,7 @@ const EditEvent = ({ token, setNotify }) => {
         location,
         description,
         eventDate,
+        max,
         maxGuests,
         eventId: id,
       },
@@ -62,7 +72,15 @@ const EditEvent = ({ token, setNotify }) => {
     setLocation('')
     setDescription('')
     setEventDate('')
-    setMaxGuests('')
+    setMax('')
+    setMaxGuests(0)
+    history.push('/events')
+  }
+
+  const handleDelete = (id) => {
+    deleteEvent({ variables: { eventId: id } })
+    cache.evict({ id: `Event:${id}` }) //this is the CacheId
+    cache.gc()
     history.push('/events')
   }
   if (loading) return <div>LOADING</div>
@@ -72,85 +90,101 @@ const EditEvent = ({ token, setNotify }) => {
   const event = data.findEvent
   return (
     <div className="edit-event-container">
-      <form onSubmit={handleEvent} className="event-form">
-        <div className="radio-buttons">
-          <label>
-            BYOB
+      <div>
+        <form onSubmit={handleEvent} className="event-form">
+          <div className="radio-buttons">
+            <label>
+              BYOB
+              <input
+                value="BYOB"
+                type="radio"
+                name="event type"
+                checked={eventType === 'BYOB'}
+                onChange={({ target }) => setEventType(target.value)}
+              ></input>
+            </label>
+            <label>
+              Bar
+              <input
+                value="Bar"
+                type="radio"
+                name="event type"
+                checked={eventType === 'Bar'}
+                onChange={({ target }) => setEventType(target.value)}
+              ></input>
+            </label>
+            <label>
+              Club
+              <input
+                value="Club"
+                type="radio"
+                name="event type"
+                checked={eventType === 'Club'}
+                onChange={({ target }) => setEventType(target.value)}
+              ></input>
+            </label>
+          </div>
+          <input
+            value={eventName}
+            placeholder="Title"
+            onChange={({ target }) => setEventName(target.value)}
+          ></input>
+          <input
+            value={eventPic}
+            placeholder="Pic"
+            onChange={({ target }) => setEventPic(target.value)}
+          ></input>
+          <input
+            value={location}
+            placeholder="Location"
+            onChange={({ target }) => setLocation(target.value)}
+          ></input>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <label>
+              Max?
+              <input
+                type="checkbox"
+                checked={max}
+                onChange={({ target }) => setMax(target.checked)}
+              ></input>
+            </label>
             <input
-              value="BYOB"
-              type="radio"
-              name="event type"
-              checked={eventType === 'BYOB'}
-              onChange={({ target }) => setEventType(target.value)}
+              style={max ? { display: 'inline-block' } : { display: 'none' }}
+              value={maxGuests}
+              type="number"
+              min="0" //problmes here need to fx
+              placeholder="no limit"
+              onChange={({ target }) => {
+                setMaxGuests(parseInt(target.value))
+              }} //changing to an Integer from String
             ></input>
-          </label>
-          <label>
-            Bar
-            <input
-              value="Bar"
-              type="radio"
-              name="event type"
-              checked={eventType === 'Bar'}
-              onChange={({ target }) => setEventType(target.value)}
-            ></input>
-          </label>
-          <label>
-            Club
-            <input
-              value="Club"
-              type="radio"
-              name="event type"
-              checked={eventType === 'Club'}
-              onChange={({ target }) => setEventType(target.value)}
-            ></input>
-          </label>
-        </div>
-        <input
-          value={eventName}
-          placeholder="Title"
-          onChange={({ target }) => setEventName(target.value)}
-        ></input>
-        <input
-          value={eventPic}
-          placeholder="Pic"
-          onChange={({ target }) => setEventPic(target.value)}
-        ></input>
-        <input
-          value={location}
-          placeholder="Location"
-          onChange={({ target }) => setLocation(target.value)}
-        ></input>
-        <input
-          value={maxGuests}
-          type="number"
-          min="2" //problmes here need to fx
-          placeholder="no limit"
-          onChange={({ target }) => {
-            if (!target.value) {
-              setMaxGuests(undefined)
-            } else {
-              setMaxGuests(parseInt(target.value))
-            }
-          }} //changing to an Integer from String
-        ></input>
-        <input
-          value={eventDate}
-          type="datetime-local"
-          onChange={({ target }) => setEventDate(target.value)}
-        ></input>
-        <textarea
-          value={description}
-          placeholder="How's it going to be?"
-          onChange={({ target }) => setDescription(target.value)}
-        ></textarea>
+          </div>
+          <input
+            value={eventDate}
+            type="datetime-local"
+            onChange={({ target }) => setEventDate(target.value)}
+          ></input>
+          <textarea
+            value={description}
+            placeholder="How's it going to be?"
+            onChange={({ target }) => setDescription(target.value)}
+          ></textarea>
+          <button
+            type="submit"
+            className="button"
+            style={{ alignSelf: 'center' }}
+          >
+            Edit Event
+          </button>
+        </form>
         <button
-          type="submit"
-          className="button"
+          className="button leave-button"
           style={{ alignSelf: 'center' }}
+          onClick={() => handleDelete(id)}
         >
-          Edit Event
+          DELETE
         </button>
-      </form>
+      </div>
       <img src={event.eventPic} className="event-pic" alt="event"></img>
     </div>
   )

@@ -21,7 +21,17 @@ import { isLoggedInVar } from './cache'
 
 function App() {
   //QUERIES
-  const events = useQuery(ALL_EVENTS)
+
+  const events = useQuery(ALL_EVENTS, {
+    // onCompleted: ({ allEvents }) => {
+    //   drinksArr = allEvents.reduce((acc, cur) => {
+    //     if (acc.includes(cur.host.drink)) {
+    //       return acc
+    //     }
+    //     return acc.concat(cur.host.drink) //cannot use Push here, not sure why
+    //   }, [])
+    // },
+  })
   const userInfo = useQuery(USER_INFO)
 
   const client = useApolloClient()
@@ -33,6 +43,7 @@ function App() {
   const [type, setType] = useState([])
   const [period, setPeriod] = useState(null)
   const [timeoutId, setTimeoutId] = useState(null)
+  const [drinks, setDrinks] = useState([])
 
   const setNotify = (message, type = 'navbar-error') => {
     clearTimeout(timeoutId)
@@ -114,6 +125,19 @@ function App() {
     onCompleted: ({ addEvent }) => {
       setNotify(`${addEvent.title} is happening!`, 'navbar-success')
     },
+    update: (store, res) => {
+      const dataInStore = store.readQuery({ query: USER_INFO })
+      store.writeQuery({
+        query: USER_INFO,
+        data: {
+          ...dataInStore,
+          me: {
+            ...dataInStore.me,
+            myEvents: [...dataInStore.me.myEvents, res.data.addEvent],
+          },
+        },
+      })
+    },
   })
 
   //checks for token of previous session
@@ -143,8 +167,18 @@ function App() {
   if (events.error || loginResult.error) return <div>ERROR </div>
   if (events.loading || loginResult.loading) return <div>LOADING </div>
 
+  const drinksArr = events.data.allEvents.reduce((acc, cur) => {
+    if (acc.includes(cur.host.drink)) {
+      return acc
+    }
+    return acc.concat(cur.host.drink) //cannot use Push here, not sure why
+  }, [])
+
+  //FILTER
+
   const eventsInfo1 = () => {
     const eventsCopy = [...events.data.allEvents]
+    //TYPE OF LOCATION FOR EVENT
     const eventsCopy1 = !type.length
       ? eventsCopy
       : eventsCopy.filter((event) => type.includes(event.eventType))
@@ -152,11 +186,17 @@ function App() {
     let d = new Date()
     const todaysDate = new Date(d.getFullYear(), d.getMonth(), d.getDate())
 
-    const eventsInfo = !period
+    //TIME PERIOD - TODAY OR THIS WEEK
+    const eventsInfo1 = !period
       ? eventsCopy1
       : eventsCopy1
           .filter((event) => new Date(event.eventDate) >= todaysDate)
           .filter((event) => new Date(period) - new Date(event.eventDate) >= 0)
+
+    const eventsInfo = !drinks.length
+      ? eventsInfo1
+      : eventsInfo1.filter((event) => drinks.includes(event.host.drink))
+
     return eventsInfo
   }
   const eventsInfo = eventsInfo1()
@@ -196,6 +236,7 @@ function App() {
               <MyEvents eventsInfo={eventsInfo} />
             </PrivateRoute>
             <PrivateRoute path="/events/:id">
+              {/* need to add something for broken links */}
               <EventShow setNotify={setNotify} />
             </PrivateRoute>
             <Route path="/register">
@@ -220,7 +261,15 @@ function App() {
                 <Attendees />
               </Route>
               <Route path="/events">
-                <Filter type={type} setType={setType} setPeriod={setPeriod} />
+                <Filter
+                  type={type}
+                  setType={setType}
+                  period={period}
+                  setPeriod={setPeriod}
+                  drinksArr={drinksArr}
+                  drinks={drinks}
+                  setDrinks={setDrinks}
+                />
               </Route>
             </Switch>
           )}
@@ -231,15 +280,14 @@ function App() {
               <Route path="/events/:id">
                 <Host />
               </Route>
-              <Route path="/events">
+              <Route path="/">
                 <Profile />
               </Route>
             </Switch>
           )}
         </aside>
-
-        <footer className="footer">FOOTER</footer>
       </div>
+      <footer className="footer"></footer>
     </div>
   )
 }

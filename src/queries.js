@@ -15,9 +15,11 @@ export const EVENT_FIELDS = gql`
     eventPic
     location
     description
+    max
     maxGuests
     eventDate
     createdAt
+    id
   }
 `
 export const NESTED_EVENT_FIELDS = gql`
@@ -30,11 +32,13 @@ export const NESTED_EVENT_FIELDS = gql`
       username
       pic
       id
+      drink
     }
     host {
       username
       pic
       id
+      drink
     }
     comments {
       comment
@@ -46,6 +50,7 @@ export const NESTED_EVENT_FIELDS = gql`
       id
     }
     description
+    max
     maxGuests
     eventDate
     createdAt
@@ -76,6 +81,7 @@ export const ADD_EVENT = gql`
     $location: String
     $eventDate: Date
     $description: String
+    $max: Boolean
     $maxGuests: Int
   ) {
     addEvent(
@@ -85,6 +91,7 @@ export const ADD_EVENT = gql`
       location: $location
       eventDate: $eventDate
       description: $description
+      max: $max
       maxGuests: $maxGuests
     ) {
       ...EventFields
@@ -100,6 +107,7 @@ export const EDIT_EVENT = gql`
     $location: String
     $eventDate: Date
     $description: String
+    $max: Boolean
     $maxGuests: Int
     $eventId: ID!
   ) {
@@ -110,6 +118,7 @@ export const EDIT_EVENT = gql`
       location: $location
       eventDate: $eventDate
       description: $description
+      max: $max
       maxGuests: $maxGuests
       eventId: $eventId
     ) {
@@ -150,6 +159,14 @@ export const FIND_EVENT = gql`
     }
   }
   ${NESTED_EVENT_FIELDS}
+`
+
+export const DELETE_EVENT = gql`
+  mutation deleteEvent($eventId: ID!) {
+    deleteEvent(eventId: $eventId) {
+      id
+    }
+  }
 `
 export const CREATE_USER = gql`
   mutation createUser(

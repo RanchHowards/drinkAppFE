@@ -77,10 +77,7 @@ const BigButton = ({ event, setNotify }) => {
         <button className="button edit-button">Edit</button>
       </Link>
     )
-  } else if (
-    !event.maxGuests ||
-    event.attendees.length < parseInt(event.maxGuests)
-  ) {
+  } else if (!event.max || event.attendees.length < parseInt(event.maxGuests)) {
     if (going) {
       return (
         <button onClick={leaveEventClick} className="button leave-button">
