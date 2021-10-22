@@ -37,12 +37,12 @@ const Register = ({ createUser, history, createResult }) => {
 
         <input
           value={pic}
-          placeholder="pic"
+          placeholder="profile pic"
           onChange={({ target }) => setPic(target.value)}
         ></input>
         <input
           value={drink}
-          placeholder="drink"
+          placeholder="drink of choice"
           required
           onChange={({ target }) => setDrink(target.value)}
         ></input>

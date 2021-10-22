@@ -2,7 +2,14 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Notification from './Notification'
 
-const Navbar = ({ login, signOut, token, notification }) => {
+const Navbar = ({
+  login,
+  signOut,
+  token,
+  notification,
+  sortName,
+  setSortName,
+}) => {
   const [showForm, setShowForm] = useState(false)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -20,6 +27,12 @@ const Navbar = ({ login, signOut, token, notification }) => {
     } else {
       setShowForm(false)
     }
+  }
+
+  const handleSort = () => {
+    const copy = sortName.concat()
+    copy.push(copy.shift())
+    setSortName(copy)
   }
   if (notification) {
     return <Notification notification={notification} />
@@ -54,6 +67,7 @@ const Navbar = ({ login, signOut, token, notification }) => {
               <Link to="/createevent">
                 <li>Create Event</li>
               </Link>
+              <li onClick={() => handleSort()}>{sortName[0]}</li>
             </ul>
           </nav>
         )}

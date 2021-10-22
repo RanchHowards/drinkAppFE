@@ -3,7 +3,7 @@ import { useQuery, useMutation } from '@apollo/client'
 import { useParams, useHistory } from 'react-router-dom'
 import { ALL_EVENTS, EDIT_EVENT, FIND_EVENT, DELETE_EVENT } from '../queries'
 
-import { cache } from '../cache'
+import { cache, eventsArrVar } from '../cache'
 
 const EditEvent = ({ token, setNotify }) => {
   const history = useHistory()
@@ -81,6 +81,7 @@ const EditEvent = ({ token, setNotify }) => {
     deleteEvent({ variables: { eventId: id } })
     cache.evict({ id: `Event:${id}` }) //this is the CacheId
     cache.gc()
+    eventsArrVar([...eventsArrVar()].filter((e) => e.id !== id))
     history.push('/events')
   }
   if (loading) return <div>LOADING</div>

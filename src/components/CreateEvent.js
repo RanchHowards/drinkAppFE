@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { eventsArrVar, userDataVar } from '../cache'
 
 const CreateEvent = ({ addEvent, history }) => {
   const [eventName, setEventName] = useState('')
@@ -13,19 +14,33 @@ const CreateEvent = ({ addEvent, history }) => {
   const handleEvent = (event) => {
     event.preventDefault()
     const inputDate = eventDate === '' ? new Date() : eventDate
-
+    const newEvent = {
+      title: eventName,
+      eventType,
+      eventPic,
+      location,
+      description,
+      eventDate: inputDate,
+      max,
+      maxGuests,
+    }
     addEvent({
-      variables: {
-        title: eventName,
-        eventType,
-        eventPic,
-        location,
-        description,
-        eventDate: inputDate,
-        max,
-        maxGuests,
-      },
+      variables: newEvent,
     })
+
+    eventsArrVar([
+      ...eventsArrVar(),
+      {
+        ...newEvent,
+        host: userDataVar(),
+        attendees: [],
+        id: Math.random(),
+        eventPic: !newEvent.eventPic
+          ? 'https://images.unsplash.com/photo-1528495612343-9ca9f4a4de28?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fHBhcnR5fGVufDB8fDB8fA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
+          : newEvent.eventPic,
+      },
+    ]) // adding to local state
+
     setEventName('')
     setEventType('')
     setEventPic('')

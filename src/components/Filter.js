@@ -12,7 +12,24 @@ const Filter = ({
   const d = new Date()
   const date = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1)
 
+  // const type = useReactiveVar(typeDataVar)
+
+  // const e = useReactiveVar(eventsArrVar)
+
+  // useEffect(() => {
+  //   eventsArrFilterVar([...eventsArrVar()])
+  // }, [eventsArrVar()])
+  // //TYPE OF LOCATION FOR EVENT
+  // useEffect(() => {
+  //   console.log(e)
+  //   const eventsFilter = !type.length
+  //     ? e
+  //     : e.filter((event) => type.includes(event.eventType))
+  //   eventsArrFilterVar([...eventsFilter])
+  // }, [type]) //eslint-disable-line
+
   const [button, setButton] = useState('all')
+
   const today = () => {
     setButton('today')
     setPeriod(date)
@@ -35,7 +52,15 @@ const Filter = ({
     } else setDrinks(drinks.concat(value))
   }
 
+  const reset = () => {
+    setButton('all')
+    setPeriod(null)
+    setType([])
+    setDrinks([])
+  }
+
   const buttonStyle = { backgroundColor: 'black', color: 'whitesmoke' }
+
   return (
     <>
       <div>
@@ -102,12 +127,17 @@ const Filter = ({
             <input
               type="checkbox"
               value={d}
+              checked={drinks.includes(d)}
               onChange={({ target }) => handleDrink(target.value)}
             ></input>
             {d}
           </label>
         ))}
       </div>
+
+      <button className="button filter-button" onClick={() => reset()}>
+        Reset
+      </button>
     </>
   )
 }

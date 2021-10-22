@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Switch, Route, useHistory, Redirect } from 'react-router-dom'
+import { Switch, Route, useHistory } from 'react-router-dom'
 
 import './App.css'
 import Events from './components/Events'
@@ -13,26 +13,26 @@ import EventShow from './components/EventShow'
 import Attendees from './components/Attendees'
 import Host from './components/Host'
 import Filter from './components/Filter'
+import PrivateRoute from './components/PrivateRoute'
 
 import { useMutation, useApolloClient, useQuery } from '@apollo/client'
 import { CREATE_USER, LOGIN, ADD_EVENT, ALL_EVENTS, USER_INFO } from './queries'
 
-import { isLoggedInVar } from './cache'
+import { isLoggedInVar, userDataVar } from './cache'
+
+import { filter } from './filter'
 
 function App() {
   //QUERIES
 
   const events = useQuery(ALL_EVENTS, {
-    // onCompleted: ({ allEvents }) => {
-    //   drinksArr = allEvents.reduce((acc, cur) => {
-    //     if (acc.includes(cur.host.drink)) {
-    //       return acc
-    //     }
-    //     return acc.concat(cur.host.drink) //cannot use Push here, not sure why
-    //   }, [])
-    // },
+    onCompleted: ({ allEvents }) => {},
   })
-  const userInfo = useQuery(USER_INFO)
+  const userInfo = useQuery(USER_INFO, {
+    onCompleted: ({ me }) => {
+      userDataVar(me) //set local state w/ user info
+    },
+  })
 
   const client = useApolloClient()
   const history = useHistory()
@@ -44,6 +44,13 @@ function App() {
   const [period, setPeriod] = useState(null)
   const [timeoutId, setTimeoutId] = useState(null)
   const [drinks, setDrinks] = useState([])
+  const [sortName, setSortName] = useState([
+    'Sort',
+    'New',
+    'Old',
+    'Sooner',
+    'Later',
+  ])
 
   const setNotify = (message, type = 'navbar-error') => {
     clearTimeout(timeoutId)
@@ -51,8 +58,9 @@ function App() {
     const timer = setTimeout(() => setNotification(null), 2500)
     setTimeoutId(timer)
   }
-
-  //MUTATIONS
+  ///////////////////
+  ///  MUTATIONS  ///
+  ///////////////////
   const [createUser, createResult] = useMutation(CREATE_USER, {
     onCompleted: ({ createUser }) => {
       localStorage.setItem('user-token', createUser.value)
@@ -61,6 +69,7 @@ function App() {
       history.push('/events')
       setNotify('Welcome to dRank!', 'navbar-success')
       userInfo.refetch()
+      userDataVar(createUser.user) //set local state w/ user info
     },
     update: (store, response) => {
       try {
@@ -90,6 +99,8 @@ function App() {
         isLoggedInVar(true)
         history.push('/events')
         setNotify(`Welcome ${login.user.username}!`, 'navbar-success')
+        console.log(login.user)
+        userDataVar(login.user) //set local state w/ user info
       }
     },
     onError: (err) => {
@@ -176,39 +187,14 @@ function App() {
 
   //FILTER
 
-  const eventsInfo1 = () => {
-    const eventsCopy = [...events.data.allEvents]
-    //TYPE OF LOCATION FOR EVENT
-    const eventsCopy1 = !type.length
-      ? eventsCopy
-      : eventsCopy.filter((event) => type.includes(event.eventType))
-
-    let d = new Date()
-    const todaysDate = new Date(d.getFullYear(), d.getMonth(), d.getDate())
-
-    //TIME PERIOD - TODAY OR THIS WEEK
-    const eventsInfo1 = !period
-      ? eventsCopy1
-      : eventsCopy1
-          .filter((event) => new Date(event.eventDate) >= todaysDate)
-          .filter((event) => new Date(period) - new Date(event.eventDate) >= 0)
-
-    const eventsInfo = !drinks.length
-      ? eventsInfo1
-      : eventsInfo1.filter((event) => drinks.includes(event.host.drink))
-
-    return eventsInfo
-  }
-  const eventsInfo = eventsInfo1()
-
-  const PrivateRoute = ({ children, ...rest }) => {
-    return (
-      <Route
-        {...rest}
-        render={() => (token ? children : <Redirect to="/register" />)}
-      />
-    )
-  }
+  const eventsInfo = filter(
+    events.data.allEvents,
+    type,
+    period,
+    drinks,
+    sortName[0]
+  )
+  // eventsArrVar([...eventsInfo])
 
   return (
     <div>
@@ -217,25 +203,27 @@ function App() {
         token={token}
         signOut={signOut}
         notification={notification}
+        sortName={sortName}
+        setSortName={setSortName}
       />
       <div className="main-container">
         <div className="main">
           <Switch>
-            <PrivateRoute path="/createevent">
+            <PrivateRoute path="/createevent" token={token}>
               <CreateEvent
                 addEvent={addEvent}
                 history={history}
                 setNotify={setNotify}
               />
             </PrivateRoute>
-            <PrivateRoute path="/editevent/:id">
+            <PrivateRoute path="/editevent/:id" token={token}>
               <EditEvent history={history} setNotify={setNotify} />
             </PrivateRoute>
 
-            <PrivateRoute path="/myevents">
-              <MyEvents eventsInfo={eventsInfo} />
+            <PrivateRoute path="/myevents" token={token}>
+              <MyEvents />
             </PrivateRoute>
-            <PrivateRoute path="/events/:id">
+            <PrivateRoute path="/events/:id" token={token}>
               {/* need to add something for broken links */}
               <EventShow setNotify={setNotify} />
             </PrivateRoute>
@@ -247,7 +235,7 @@ function App() {
               />
             </Route>
             <Route path="/events">
-              <Events eventsInfo={eventsInfo} setNotify={setNotify} />
+              <Events events={eventsInfo} setNotify={setNotify} />
             </Route>
             <Route path="/">
               <h1>SOMETHING HERE</h1>
