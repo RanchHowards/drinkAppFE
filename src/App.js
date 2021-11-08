@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Switch, Route, useHistory } from 'react-router-dom'
+import { Switch, Route, useHistory, Link } from 'react-router-dom'
 
 import './App.css'
 import Events from './components/Events'
@@ -245,7 +245,10 @@ function App() {
               <Events events={eventsInfo} setNotify={setNotify} />
             </Route>
             <Route path="/">
-              <h1>SOMETHING HERE</h1>
+              <h1>Welcome to DrANK</h1>
+              <p>
+                <Link to="events">shall we?</Link>
+              </p>
             </Route>
           </Switch>
         </div>
