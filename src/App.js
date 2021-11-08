@@ -205,6 +205,13 @@ function App() {
         notification={notification}
         sortName={sortName}
         setSortName={setSortName}
+        type={type}
+        setType={setType}
+        period={period}
+        setPeriod={setPeriod}
+        drinksArr={drinksArr}
+        drinks={drinks}
+        setDrinks={setDrinks}
       />
       <div className="main-container">
         <div className="main">
@@ -257,6 +264,10 @@ function App() {
                   drinksArr={drinksArr}
                   drinks={drinks}
                   setDrinks={setDrinks}
+                  buttonClass="button"
+                  dateClass="filter-dates"
+                  checkBoxClass="filter-checkboxes"
+                  drinksClass="filter-drinks"
                 />
               </Route>
             </Switch>

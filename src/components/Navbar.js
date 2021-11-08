@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Notification from './Notification'
+import Filter from './Filter'
 
 const Navbar = ({
   login,
@@ -9,8 +10,17 @@ const Navbar = ({
   notification,
   sortName,
   setSortName,
+  type,
+  setType,
+  period,
+  setPeriod,
+  drinksArr,
+  drinks,
+  setDrinks,
 }) => {
   const [showForm, setShowForm] = useState(false)
+  const [expand, setExpand] = useState(false)
+  const [showFilter, setShowFilter] = useState(false)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
@@ -98,6 +108,81 @@ const Navbar = ({
             ></input>
           </div>
         </form>
+      )}
+      <div className="navbar-collapsed navbar-collapsed-main">
+        <div onClick={() => setShowForm(false)}>
+          <Link to="/events">
+            <strong>DrANK</strong>
+          </Link>
+        </div>
+        {!token && (
+          <nav>
+            <ul>
+              <li onClick={signIn}>Sign In</li>
+              <Link to="/register">
+                <li onClick={() => setShowForm(false)}> Sign Up</li>
+              </Link>
+            </ul>
+          </nav>
+        )}
+        {token && (
+          <nav
+            onClick={() => {
+              setShowFilter(false)
+              setExpand(!expand)
+            }}
+          >
+            EXPAND
+          </nav>
+        )}
+      </div>
+      {expand && (
+        <ul
+          className={expand ? 'navbar-collapsed nav-collapsed-wrapper' : null}
+        >
+          <Link to="/events">
+            <li>Events</li>
+          </Link>
+          <Link to="/myevents">
+            <li>My Events</li>
+          </Link>
+          <Link to="/createevent">
+            <li>Create Event</li>
+          </Link>
+          <li onClick={() => handleSort()}>{sortName[0]}</li>
+          <Link to="/profile">
+            <li>Profile</li>
+          </Link>
+          <li onClick={() => setShowFilter(!showFilter)}>Filter</li>
+          <li onClick={signOut}>Sign Out</li>
+        </ul>
+      )}
+      {showFilter && (
+        <div
+          className={
+            showFilter ? 'navbar-collapsed nav-collapsed-filter' : null
+          }
+        >
+          <Filter
+            type={type}
+            setType={setType}
+            period={period}
+            setPeriod={setPeriod}
+            drinksArr={drinksArr}
+            drinks={drinks}
+            setDrinks={setDrinks}
+            buttonClass="collapsed-filter-button"
+            dateClass="collapsed-filter-dates"
+            checkBoxClass="collapsed-filter-checkboxes"
+            drinksClass="collapsed-filter-drinks"
+          />
+          <button
+            className="collapsed-filter-button"
+            onClick={() => setShowFilter(false)}
+          >
+            Done
+          </button>
+        </div>
       )}
     </nav>
   )

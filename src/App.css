@@ -21,7 +21,10 @@ p {
 a {
   color: inherit;
   text-decoration: none;
-  transition: all 0.3s ease-in-out;
+}
+.navbar {
+  height: 40px;
+  background-color: black;
 }
 textarea {
   resize: none;
@@ -106,7 +109,56 @@ ul {
   box-sizing: border-box;
   width: 95%;
 }
+.collapsed-filter-checkboxes {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 10px;
+  border: black 2px solid;
+  padding: 5px;
+  box-sizing: border-box;
+  width: 95%;
+}
+.filter-dates {
+  display: flex;
+  flex-flow: column;
+  justify-content: space-between;
+  border: black 2px solid;
+  padding: 5px;
+  width: 95%;
+  /* box-sizing is very helpful */
+  box-sizing: border-box;
+  cursor: pointer;
+  margin: 10px;
+  font-size: 25px;
+  align-items: center;
+}
+.collapsed-filter-dates {
+  display: flex;
+  flex-flow: column;
+  justify-content: space-between;
+  border: black 2px solid;
+  padding: 5px;
+  width: 95%;
+  /* box-sizing is very helpful */
+  box-sizing: border-box;
+  cursor: pointer;
+  margin: 10px;
+  font-size: 25px;
+}
 .filter-drinks {
+  display: flex;
+  flex-flow: column;
+  justify-content: space-between;
+  border: black 2px solid;
+  padding: 5px;
+  width: 95%;
+  /* box-sizing is very helpful */
+  box-sizing: border-box;
+  cursor: pointer;
+  margin: 10px;
+  font-size: 25px;
+}
+.collapsed-filter-drinks {
   display: flex;
   flex-flow: column;
   justify-content: space-between;
@@ -288,7 +340,7 @@ input[type='radio']:checked {
   display: flex;
   padding: 0 15px;
   align-items: center;
-  min-height: 35px;
+  min-height: 40px;
 }
 .navbar-container,
 .footer {
@@ -334,7 +386,11 @@ nav ul li:hover {
 
 .login-form {
   float: right;
-  margin: 5px 10px 10px 10px;
+  margin: 0 0px 10px 10px;
+  background-color: black;
+}
+.login-form input {
+  height: 25px;
 }
 
 .attendees-container {
@@ -376,17 +432,94 @@ nav ul li:hover {
 }
 /* small screen */
 
+.hide {
+  display: none;
+}
+
 .main-container > * {
   flex: 1 100%;
+  justify-content: center;
+}
+.navbar-container {
+  display: none;
+}
+.nav-collapsed-wrapper a:hover,
+.nav-collapsed-wrapper a li:hover,
+.nav-collapsed-wrapper li:hover {
+  color: whitesmoke;
+  background-color: black;
+}
+.navbar-collapsed-main {
+  background-color: black;
+  color: whitesmoke;
+  align-items: center;
+  padding: 0 15px;
+  justify-content: space-between;
+  height: 100%;
+}
+.navbar-collapsed {
+  display: flex;
+}
+.nav-collapsed-wrapper {
+  display: flex;
+  justify-content: space-between;
+  flex-flow: column;
+  background-color: white;
+  color: black;
+  float: right;
+  z-index: 4;
+  margin: 0 5px 10px 10px;
+  box-shadow: rgb(158, 152, 152) 2px 5px 8px 2px;
+}
+.nav-collapsed-filter {
+  display: flex;
+  justify-content: space-between;
+  flex-flow: column;
+  background-color: white;
+  color: black;
+  float: right;
+  margin: 0 5px 10px 0px;
+  z-index: 5;
+  position: fixed;
+  right: 0;
+  align-items: center;
+  border: black solid 1px;
+  box-shadow: rgb(158, 152, 152) 2px 5px 8px 2px;
+}
+.collapsed-filter-button {
+  display: inline-block;
+  border: black solid 2px;
+  background-color: rgb(255, 255, 255);
+  box-sizing: border-box;
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: 300;
+  text-align: center;
+  transition: all 0.2s;
+  width: 95%;
+  margin: 10px;
+  font-size: 30px;
 }
 /* medium screen */
 @media all and (min-width: 600px) {
   .aside {
     flex: 1 0 0;
+    max-width: 500px;
   }
 }
 /* larger screen */
 @media all and (min-width: 800px) {
+  .navbar-container {
+    display: flex;
+  }
+
+  .hide {
+    display: flex;
+  }
+
+  .navbar-collapsed {
+    display: none;
+  }
   .main {
     flex: 3 0px;
     order: 2;
@@ -394,9 +527,6 @@ nav ul li:hover {
 
   .aside-1 {
     order: 1;
-    top: 70vh;
-    position: -webkit-sticky;
-    position: sticky;
   }
 
   .aside-2 {

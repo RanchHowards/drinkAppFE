@@ -8,6 +8,10 @@ const Filter = ({
   drinksArr,
   drinks,
   setDrinks,
+  buttonClass,
+  dateClass,
+  drinksClass,
+  checkBoxClass,
 }) => {
   const d = new Date()
   const date = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1)
@@ -63,10 +67,10 @@ const Filter = ({
 
   return (
     <>
-      <div>
+      <div className={dateClass}>
         <button
           style={button === 'all' ? buttonStyle : null}
-          className="button filter-button"
+          className={'filter-button ' + buttonClass}
           value={null}
           onClick={({ target }) => {
             setButton('all')
@@ -77,13 +81,13 @@ const Filter = ({
         </button>
         <button
           style={button === 'today' ? buttonStyle : null}
-          className="button filter-button"
+          className={'filter-button ' + buttonClass}
           onClick={() => today()}
         >
           Today
         </button>
         <button
-          className="button filter-button"
+          className={'filter-button ' + buttonClass}
           style={button === 'week' ? buttonStyle : null}
           onClick={() => {
             week()
@@ -92,7 +96,7 @@ const Filter = ({
           This Week
         </button>
       </div>
-      <div className="filter-checkboxes">
+      <div className={checkBoxClass}>
         <label>
           <input
             type="checkbox"
@@ -121,7 +125,7 @@ const Filter = ({
           Club
         </label>
       </div>
-      <div className="filter-drinks">
+      <div className={drinksClass}>
         {drinksArr.map((d) => (
           <label key={d}>
             <input
@@ -135,7 +139,10 @@ const Filter = ({
         ))}
       </div>
 
-      <button className="button filter-button" onClick={() => reset()}>
+      <button
+        className={'filter-button ' + buttonClass}
+        onClick={() => reset()}
+      >
         Reset
       </button>
     </>
