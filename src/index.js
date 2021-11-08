@@ -13,7 +13,9 @@ import {
 
 import { setContext } from '@apollo/client/link/context'
 import { cache } from './cache'
-const httpLink = createHttpLink({ uri: 'http://localhost:4000/graphql' })
+const httpLink = createHttpLink({
+  uri: 'https://cryptic-castle-61073.herokuapp.com/',
+})
 
 export const typeDefs = gql`
   extend type Query {
