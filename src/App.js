@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { Switch, Route, useHistory, Link } from 'react-router-dom'
+import { Switch, Route, useHistory } from 'react-router-dom'
 
 import './App.css'
 import Events from './components/Events'
 import Navbar from './components/Navbar'
 import CreateEvent from './components/CreateEvent'
+import Landing from './components/Landing'
 import Profile from './components/Profile'
 import Register from './components/Register'
 import MyEvents from './components/MyEvents'
@@ -40,6 +41,7 @@ function App() {
 
   //STATE
   const [token, setToken] = useState(null)
+  const [showForm, setShowForm] = useState(false)
   const [notification, setNotification] = useState(null)
   const [type, setType] = useState([])
   const [period, setPeriod] = useState(null)
@@ -213,6 +215,8 @@ function App() {
         drinksArr={drinksArr}
         drinks={drinks}
         setDrinks={setDrinks}
+        setShowForm={setShowForm}
+        showForm={showForm}
       />
       <div className="main-container">
         <div className="main">
@@ -246,10 +250,7 @@ function App() {
               <Events events={eventsInfo} setNotify={setNotify} />
             </Route>
             <Route path="/" exact>
-              <h1>Welcome to DrANK</h1>
-              <p>
-                <Link to="events">shall we?</Link>
-              </p>
+              <Landing setShowForm={setShowForm} showForm={showForm} />
             </Route>
             <Route to="*">
               <NoMatch />
@@ -286,7 +287,6 @@ function App() {
               <Route path="/events/:id">
                 <Host />
               </Route>
-              {/* something strange happening with the root Route */}
               <Route path="/">
                 <Profile />
               </Route>

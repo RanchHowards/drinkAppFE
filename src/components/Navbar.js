@@ -17,8 +17,9 @@ const Navbar = ({
   drinksArr,
   drinks,
   setDrinks,
+  showForm,
+  setShowForm,
 }) => {
-  const [showForm, setShowForm] = useState(false)
   const [expand, setExpand] = useState(false)
   const [showFilter, setShowFilter] = useState(false)
   const [username, setUsername] = useState('')

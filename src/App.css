@@ -18,6 +18,17 @@ input {
 p {
   margin: 0;
 }
+
+#already-drank {
+  color: inherit;
+  font-weight: initial;
+  transition: all 0.3s ease-in-out;
+}
+#already-drank:hover {
+  color: red;
+  cursor: pointer;
+  font-weight: bolder;
+}
 a {
   color: inherit;
   text-decoration: none;
