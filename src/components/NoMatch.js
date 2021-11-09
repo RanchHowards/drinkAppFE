@@ -11,7 +11,7 @@ const NoMatch = () => {
     <div style={noMatch}>
       <h3>Not sure what you're looking for...</h3>
       <h4>but it ain't here</h4>
-      <Link to="events">
+      <Link to="/events">
         <button className="button filter-button">EXIT</button>
       </Link>
     </div>
