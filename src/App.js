@@ -236,7 +236,6 @@ function App() {
               <MyEvents />
             </PrivateRoute>
             <PrivateRoute path="/events/:id" token={token}>
-              {/* need to add something for broken links */}
               <EventShow setNotify={setNotify} />
             </PrivateRoute>
             <Route path="/register">
@@ -252,7 +251,7 @@ function App() {
             <Route path="/" exact>
               <Landing setShowForm={setShowForm} showForm={showForm} />
             </Route>
-            <Route to="*">
+            <Route path="*">
               <NoMatch />
             </Route>
           </Switch>
