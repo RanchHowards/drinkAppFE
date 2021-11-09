@@ -178,7 +178,7 @@ function App() {
     return isLoggedInVar(false)
   }
 
-  if (events.error || loginResult.error) return <div>ERROR </div>
+  if (events.error) return <div>ERROR </div>
   if (events.loading || loginResult.loading) return <div>LOADING </div>
 
   const drinksArr = events.data.allEvents.reduce((acc, cur) => {
@@ -252,6 +252,9 @@ function App() {
               <Landing setShowForm={setShowForm} showForm={showForm} />
             </Route>
             <Route path="/drinkAppFE" exact>
+              <Redirect to="/index" />
+            </Route>
+            <Route path="/" exact>
               <Redirect to="/index" />
             </Route>
             <Route path="*">
