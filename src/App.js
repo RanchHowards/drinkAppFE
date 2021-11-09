@@ -13,6 +13,7 @@ import EventShow from './components/EventShow'
 import Attendees from './components/Attendees'
 import Host from './components/Host'
 import Filter from './components/Filter'
+import NoMatch from './components/NoMatch'
 import PrivateRoute from './components/PrivateRoute'
 
 import { useMutation, useApolloClient, useQuery } from '@apollo/client'
@@ -244,11 +245,14 @@ function App() {
             <Route path="/events">
               <Events events={eventsInfo} setNotify={setNotify} />
             </Route>
-            <Route path="/">
+            <Route path="/" exact>
               <h1>Welcome to DrANK</h1>
               <p>
                 <Link to="events">shall we?</Link>
               </p>
+            </Route>
+            <Route to="*">
+              <NoMatch />
             </Route>
           </Switch>
         </div>
@@ -282,6 +286,7 @@ function App() {
               <Route path="/events/:id">
                 <Host />
               </Route>
+              {/* something strange happening with the root Route */}
               <Route path="/">
                 <Profile />
               </Route>
