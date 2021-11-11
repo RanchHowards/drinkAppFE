@@ -26,8 +26,6 @@ const EventShow = ({ token, setNotify }) => {
   const event = eventInfo.data.findEvent
   const user = userInfo.data.me
 
-  console.log(new Date(event.eventDate))
-
   const going = !event.attendees.every((person) => person?.id !== user?.id)
 
   const date = new Date(event.eventDate)
